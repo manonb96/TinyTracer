@@ -1,4 +1,5 @@
 #include "constants.hpp"
+#include "core.hpp"
 #include <GLFW/glfw3.h>
 #include <iostream>
 
@@ -14,15 +15,19 @@ int main() {
 		glfwTerminate();
 		return -1;
 	}
-
 	glfwMakeContextCurrent(window);
 
-	while (!glfwWindowShouldClose(window)) {
-		glfwWaitEvents();
+	Core* core = new Core();
+	core->InitializeGLEW();
+	core->InitializeFramebuffer();
+	core->InitializeScene();
 
-		glfwSwapBuffers(window);
+	while (!glfwWindowShouldClose(window)) {
+		core->RenderScene();
+		glfwWaitEvents();
 	}
 
+	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
 }
