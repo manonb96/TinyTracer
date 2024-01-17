@@ -7,7 +7,7 @@ Camera::Camera() {
 	right = float3(1.f, 0.f, 0.f);
 	up = float3(0.f, 1.f, 0.f);
 	forward = float3(0.f, 0.f, 1.f);
-	aspectRatio = WIDTH / HEIGHT;
+	aspectRatio = (float)WIDTH / (float)HEIGHT;
 }
 
 Camera::Camera(float3 pos, float3 target, float3 up) {
