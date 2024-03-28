@@ -14,5 +14,5 @@ public:
 	float3 forward;
 	float aspectRatio;
 
-	Ray* GeneratePrimaryRay(float x, float y);
+	Ray* GeneratePrimaryRay(int x, int y);
 };

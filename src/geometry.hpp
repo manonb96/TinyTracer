@@ -10,7 +10,7 @@ public:
 	~Sphere() = default;
 	float3 center;
 	float radius;
-	float3 color = float3(255, 0, 0);
+	float3 color = float3(1, 0, 0);
 
 	bool IntersectRaySphere(Ray& ray);
 };

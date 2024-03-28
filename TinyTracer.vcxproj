@@ -138,6 +138,7 @@
     <ClInclude Include="src\constants.hpp" />
     <ClInclude Include="src\core.hpp" />
     <ClInclude Include="src\geometry.hpp" />
+    <ClInclude Include="src\lights.hpp" />
     <ClInclude Include="src\raytracer.hpp" />
     <ClInclude Include="src\shader.hpp" />
   </ItemGroup>
@@ -146,6 +147,7 @@
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\core.cpp" />
     <ClCompile Include="src\geometry.cpp" />
+    <ClCompile Include="src\lights.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\shader.cpp" />
   </ItemGroup>
