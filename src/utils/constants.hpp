@@ -5,3 +5,8 @@
 #define VIEWPORT_WIDTH 800
 #define VIEWPORT_HEIGHT 600
 #define OFFSET 0.001
+
+
+// Configure which API to use
+#define OPENGL
+#define VULKAN

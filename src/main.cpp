@@ -1,6 +1,6 @@
-#include "constants.hpp"
-#include "core.hpp"
-#include "shader.hpp"
+#include "utils/constants.hpp"
+#include "raytracing/core.hpp"
+#include "shaders/shader.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -85,7 +85,7 @@ int main() {
 	glEnableVertexAttribArray(1);
 
 	// Set up shaders and textures
-	Shader shader("shaders/shader.vs", "shaders/shader.fs");
+	Shader shader("shaders/basic.vert", "shaders/basic.frag");
 	unsigned char* pixels = new unsigned char[WIDTH * HEIGHT * 3];
 
 	unsigned int texture;

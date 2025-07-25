@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "base_types.hpp"
+#include "../utils/base_types.hpp"
 
 class Shader {
 public:
