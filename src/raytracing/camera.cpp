@@ -1,6 +1,6 @@
 #include "camera.hpp"
 #include "raytracer.hpp"
-#include "constants.hpp"
+#include "../utils/constants.hpp"
 
 Camera::Camera() {
 	position = float3(0.f, 0.f, 0.f);

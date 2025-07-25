@@ -1,5 +1,5 @@
 #include "core.hpp"
-#include "constants.hpp"
+#include "../utils/constants.hpp"
 #include "camera.hpp"
 #include "geometry.hpp"
 #include "lights.hpp"

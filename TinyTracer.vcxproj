@@ -133,23 +133,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\base_types.hpp" />
-    <ClInclude Include="src\camera.hpp" />
-    <ClInclude Include="src\constants.hpp" />
-    <ClInclude Include="src\core.hpp" />
-    <ClInclude Include="src\geometry.hpp" />
-    <ClInclude Include="src\lights.hpp" />
-    <ClInclude Include="src\raytracer.hpp" />
-    <ClInclude Include="src\shader.hpp" />
+    <ClInclude Include="src\utils\base_types.hpp" />
+    <ClInclude Include="src\raytracing\camera.hpp" />
+    <ClInclude Include="src\utils\constants.hpp" />
+    <ClInclude Include="src\raytracing\core.hpp" />
+    <ClInclude Include="src\raytracing\geometry.hpp" />
+    <ClInclude Include="src\raytracing\intersectionpoint.hpp" />
+    <ClInclude Include="src\raytracing\lights.hpp" />
+    <ClInclude Include="src\raytracing\raytracer.hpp" />
+    <ClInclude Include="src\shaders\shader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lib\glad\src\glad.c" />
-    <ClCompile Include="src\camera.cpp" />
-    <ClCompile Include="src\core.cpp" />
-    <ClCompile Include="src\geometry.cpp" />
-    <ClCompile Include="src\lights.cpp" />
+    <ClCompile Include="src\raytracing\camera.cpp" />
+    <ClCompile Include="src\raytracing\core.cpp" />
+    <ClCompile Include="src\raytracing\geometry.cpp" />
+    <ClCompile Include="src\raytracing\lights.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\shaders\shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\basic.frag" />
+    <None Include="shaders\basic.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
