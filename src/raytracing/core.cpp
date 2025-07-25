@@ -4,8 +4,6 @@
 #include "geometry.hpp"
 #include "lights.hpp"
 #include "raytracer.hpp"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
 
 void Core::InitializeScene() {

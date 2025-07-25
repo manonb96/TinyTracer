@@ -104,7 +104,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>lib\glad\include;lib\glfw-3.3.9.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib\glad\include;lib\glfw-3.3.9.bin.WIN64\include;lib\spdlog\include;lib\gsl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,6 +134,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\glfw\glfw_initialization.h" />
+    <ClInclude Include="src\graphics\glfw\glfw_monitor.h" />
+    <ClInclude Include="src\graphics\glfw\glfw_window.h" />
+    <ClInclude Include="src\graphics\graphics.h" />
+    <ClInclude Include="src\graphics\opengl_graphics.h" />
     <ClInclude Include="src\utils\base_types.hpp" />
     <ClInclude Include="src\raytracing\camera.hpp" />
     <ClInclude Include="src\utils\constants.hpp" />
@@ -142,9 +148,15 @@
     <ClInclude Include="src\raytracing\lights.hpp" />
     <ClInclude Include="src\raytracing\raytracer.hpp" />
     <ClInclude Include="src\shaders\shader.hpp" />
+    <ClInclude Include="src\utils\precomp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lib\glad\src\glad.c" />
+    <ClCompile Include="src\graphics\glfw\glfw_initialization.cpp" />
+    <ClCompile Include="src\graphics\glfw\glfw_monitor.cpp" />
+    <ClCompile Include="src\graphics\glfw\glfw_window.cpp" />
+    <ClCompile Include="src\graphics\graphics.cpp" />
+    <ClCompile Include="src\graphics\opengl_graphics.cpp" />
     <ClCompile Include="src\raytracing\camera.cpp" />
     <ClCompile Include="src\raytracing\core.cpp" />
     <ClCompile Include="src\raytracing\geometry.cpp" />
