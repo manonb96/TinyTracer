@@ -6,6 +6,8 @@ Its a work in progress and more features will be added over the time to come!
 This project uses the following libraries:
 - [GLFW](https://www.glfw.org/) 
 - [GLAD](https://glad.dav1d.de/)
+- [SPDLog](https://github.com/gabime/spdlog)
+- [GSL](https://github.com/microsoft/GSL)
 
 ### Sources
 Used Joey de Vries' [LearnOpenGL-book](https://learnopengl.com/) to set up OpenGL.
