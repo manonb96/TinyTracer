@@ -4,6 +4,9 @@
 // Source: https://learnopengl.com/Getting-started/Shaders
 // ***********************************************************
 
+// TODO: Refactor
+// - Split into different constructions based on Graphics API
+// - Use SPDLog
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	std::string vertexCode;
 	std::string fragmentCode;

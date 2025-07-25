@@ -2,6 +2,25 @@
 #include <math.h>
 #include <cmath>
 
+struct int2 {
+	int x, y;
+	int2();
+	int2(int a, int b);
+};
+inline int2::int2()	: x(0), y(0) {}
+inline int2::int2(int a, int b) : x(a), y(b) {}
+inline int2 operator+(int2 a, int2 b) { return int2(a.x + b.x, a.y + b.y); }
+inline int2 operator-(int2 a, int2 b) { return int2(a.x - b.x, a.y - b.y); }
+inline int2 operator/(int2 a, int b) { return int2(a.x / b, a.y / b); }
+
+struct float2 {
+	float x, y;
+	float2();
+	float2(float a, float b);
+};
+inline float2::float2() : x(0.0f), y(0.0f) {}
+inline float2::float2(float a, float b) : x(a), y(b) {}
+
 struct float3 {
 	float x, y, z;
 	float3();
