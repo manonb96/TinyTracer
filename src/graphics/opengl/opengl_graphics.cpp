@@ -2,8 +2,8 @@
 #include <GLFW/glfw3.h>
 
 #include "opengl_graphics.h"
-#include "../utils/constants.hpp"
-#include "../utils/precomp.h"
+#include "../../utils/constants.hpp"
+#include "../../utils/precomp.h"
 
 #pragma region Helpers
 
