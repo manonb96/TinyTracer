@@ -8,6 +8,8 @@
 // - Split into different constructions based on Graphics API
 // - Use SPDLog
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+
+#if OPENGL
 	std::string vertexCode;
 	std::string fragmentCode;
 	std::ifstream vShaderFile;
@@ -78,6 +80,9 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	glDeleteShader(fragmentShader);
 
 	pixelColorLocation = glGetUniformLocation(ID, "pixelColor");
+#elif VULKAN
+	ID = 0;
+#endif
 }
 
 void Shader::use() {

@@ -4,15 +4,15 @@
 
 Window::Window(const char* name, int2 size) {
 
-#if VULKAN
+#if OPENGL
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	#ifdef __APPLE__
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	#endif
+#elif VULKAN
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-#endif
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // OpenGL
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // OpenGL
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // OpenGL
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // OpenGL
 #endif
 
 	window_ = glfwCreateWindow(size.x, size.y, name, nullptr, nullptr);
@@ -20,7 +20,9 @@ Window::Window(const char* name, int2 size) {
 		std::exit(EXIT_FAILURE);
 	}
 	
-	glfwMakeContextCurrent(window_); // OpenGL
+#if OPENGL
+	glfwMakeContextCurrent(window_);
+#endif
 }
 
 Window::~Window() {

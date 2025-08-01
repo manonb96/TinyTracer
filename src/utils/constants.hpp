@@ -8,5 +8,5 @@
 
 
 // Configure which API to use
-#define OPENGL 1
-#define VULKAN 0
+#define OPENGL 0
+#define VULKAN 1
