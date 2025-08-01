@@ -54,19 +54,19 @@ int main() {
 	core->InitializeScene();
 
 	while (!window.ShouldClose()) {
+		glfwPollEvents();
 
 		// Handle user input
 		window.ProcessUserInput();
 
-		// Render scene
-		core->RenderScene(pixels);
-		graphics.RenderIndexedBuffer(pixels, shader.ID);
+		if (graphics.BeginFrame()) {
+			// Render scene
+			core->RenderScene(pixels);
+			graphics.RenderIndexedBuffer(pixels, shader.ID);
 
-		// Wrap up
-#if OPENGL
-		glfwSwapBuffers(window.GetHandle());
-#endif
-		glfwPollEvents();
+			// Wrap up
+			graphics.EndFrame();
+		}
 	}
 
 	// Clear memory

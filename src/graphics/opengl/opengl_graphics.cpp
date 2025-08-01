@@ -13,6 +13,17 @@ void framebuffer_size_callback(GLFWwindow*, int width, int height) {
 
 #pragma endregion
 
+#pragma region Drawing
+bool OpenGLGraphics::BeginFrame() {
+	return true;
+}
+
+void OpenGLGraphics::EndFrame() {
+	glfwSwapBuffers(window_->GetHandle());
+}
+
+#pragma endregion
+
 #pragma region Buffers
 
 void OpenGLGraphics::BindVertexArrayObject() {
