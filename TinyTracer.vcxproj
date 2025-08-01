@@ -139,6 +139,7 @@
     <ClInclude Include="src\graphics\glfw\glfw_window.h" />
     <ClInclude Include="src\graphics\graphics.h" />
     <ClInclude Include="src\graphics\opengl_graphics.h" />
+    <ClInclude Include="src\graphics\vertex.h" />
     <ClInclude Include="src\utils\base_types.hpp" />
     <ClInclude Include="src\raytracing\camera.hpp" />
     <ClInclude Include="src\utils\constants.hpp" />

@@ -8,7 +8,7 @@ public:
 	explicit OpenGLGraphics(gsl::not_null<Window*> window);
 	~OpenGLGraphics();
 
-	void CreateVertexBuffer(gsl::span<float> vertices) override;
+	void CreateVertexBuffer(gsl::span<Vertex> vertices) override;
 	void CreateIndexBuffer(gsl::span<int> indices) override;
 	void CreateTexture() override;
 	void RenderIndexedBuffer(unsigned char* pixels, unsigned int shaderID) override;

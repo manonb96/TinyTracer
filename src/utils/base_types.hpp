@@ -16,17 +16,21 @@ inline int2 operator/(int2 a, int b) { return int2(a.x / b, a.y / b); }
 struct float2 {
 	float x, y;
 	float2();
+	float2(float a);
 	float2(float a, float b);
 };
 inline float2::float2() : x(0.0f), y(0.0f) {}
+inline float2::float2(float a) : x(a), y(a) {}
 inline float2::float2(float a, float b) : x(a), y(b) {}
 
 struct float3 {
 	float x, y, z;
 	float3();
+	float3(float a);
 	float3(float a, float b, float c);
 };
 inline float3::float3() : x(0.0f), y(0.0f), z(0.0f) {}
+inline float3::float3(float a) : x(a), y(a), z(a) {}
 inline float3::float3(float a, float b, float c) : x(a), y(b), z(c) {}
 inline float rsqrtf(float x) { return 1.0f / sqrtf(x); }
 inline float3 operator+(float3 a, float3 b) { return float3(a.x + b.x, a.y + b.y, a.z + b.z); }

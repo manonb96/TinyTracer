@@ -20,14 +20,14 @@ void OpenGLGraphics::BindVertexArrayObject() {
 	glBindVertexArray(VAO_);
 }
 
-void OpenGLGraphics::CreateVertexBuffer(gsl::span<float> vertices) {
+void OpenGLGraphics::CreateVertexBuffer(gsl::span<Vertex> vertices) {
 	glGenBuffers(1, &VBO_);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(sizeof(float3)));
 	glEnableVertexAttribArray(1);
 }
 
