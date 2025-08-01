@@ -63,7 +63,9 @@ int main() {
 		graphics.RenderIndexedBuffer(pixels, shader.ID);
 
 		// Wrap up
+#if OPENGL
 		glfwSwapBuffers(window.GetHandle());
+#endif
 		glfwPollEvents();
 	}
 

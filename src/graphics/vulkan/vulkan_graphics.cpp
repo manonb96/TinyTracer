@@ -1,5 +1,7 @@
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
+#include <set>
 #include "../../utils/precomp.h"
 #include "vulkan_graphics.h"
 
@@ -186,6 +188,158 @@ bool VulkanGraphics::AreAllExtensionsSupported(gsl::span<gsl::czstring> extensio
 
 #pragma endregion
 
+#pragma region Devices and queues
+VulkanGraphics::QueueFamilyIndices VulkanGraphics::FindQueueFamilies(VkPhysicalDevice device) {
+	std::uint32_t queue_family_count = 0;
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
+	std::vector<VkQueueFamilyProperties> families(queue_family_count);
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, families.data());
+
+	auto graphics_family_it = std::find_if(families.begin(), families.end(), [](const VkQueueFamilyProperties& props) {
+		return props.queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_TRANSFER_BIT);
+		});
+
+	QueueFamilyIndices result;
+	result.graphics_family = graphics_family_it - families.begin();
+
+	for (std::uint32_t i = 0; i < families.size(); i++) {
+		VkBool32 has_presentation_support = false;
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &has_presentation_support);
+		if (has_presentation_support) {
+			result.presentation_family = i;  // It might be the same as Graphics Family, but consider separately
+			break;
+		}
+	}
+
+	return result;
+}
+
+VulkanGraphics::SwapChainProperties VulkanGraphics::GetSwapChainProperties(VkPhysicalDevice device) {
+	SwapChainProperties properties;
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface_, &properties.capabilities);
+
+	std::uint32_t format_count;
+	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &format_count, nullptr);
+	properties.formats.resize(format_count);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &format_count, properties.formats.data());
+
+	std::uint32_t modes_count;
+	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &modes_count, nullptr);
+	properties.present_modes.resize(modes_count);
+	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &modes_count, properties.present_modes.data());
+
+	return properties;
+}
+
+std::vector<VkExtensionProperties> VulkanGraphics::GetDeviceAvailableExtensions(VkPhysicalDevice device) {
+	std::uint32_t available_extensions_count;
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, nullptr);
+	std::vector<VkExtensionProperties> available_extensions(available_extensions_count);
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, available_extensions.data());
+
+	return available_extensions;
+}
+
+bool VulkanGraphics::AreAllDeviceExtensionsSupported(VkPhysicalDevice device) {
+	std::vector<VkExtensionProperties> available_extensions = GetDeviceAvailableExtensions(device);
+	return std::all_of(required_device_extensions_.begin(), required_device_extensions_.end(), std::bind_front(IsExtensionSupported, available_extensions));
+}
+
+bool VulkanGraphics::IsDeviceSuitable(VkPhysicalDevice device) {
+	QueueFamilyIndices families = FindQueueFamilies(device);
+	return families.IsValid() && AreAllDeviceExtensionsSupported(device) &&
+		GetSwapChainProperties(device).IsValid(); 
+}
+
+void VulkanGraphics::PickPhysicalDevice() {
+	std::vector<VkPhysicalDevice> devices = GetAvailableDevices();
+	std::erase_if(devices, std::not_fn(std::bind_front(&VulkanGraphics::IsDeviceSuitable, this)));
+
+	if (devices.empty()) {
+		spdlog::error("No physical devices that match the criteria");
+		std::exit(EXIT_FAILURE);
+	}
+
+	VkPhysicalDeviceProperties device_properties;
+	vkGetPhysicalDeviceProperties(devices[0], &device_properties);
+	spdlog::info("Setting {} as physical device (total # physical devices available: {})", device_properties.deviceName, devices.size());
+	
+	// We just pick the first available device
+	physical_device_ = devices[0];
+}
+
+std::vector<VkPhysicalDevice> VulkanGraphics::GetAvailableDevices() {
+	std::uint32_t device_count;
+	vkEnumeratePhysicalDevices(instance_, &device_count, nullptr);
+
+	if (device_count == 0) {
+		return {};
+	}
+
+	std::vector<VkPhysicalDevice> devices(device_count);
+	vkEnumeratePhysicalDevices(instance_, &device_count, devices.data());
+
+	return devices;
+}
+
+void VulkanGraphics::CreateLogicalDeviceAndQueues() {
+	QueueFamilyIndices picked_device_families = FindQueueFamilies(physical_device_);
+
+	// Sanity check
+	if (!picked_device_families.IsValid()) {
+		std::exit(EXIT_FAILURE);
+	}
+
+	// If graphics family and presentation family at the same, the set will only have one value
+	std::set<std::uint32_t> unique_queue_families = { picked_device_families.graphics_family.value(), picked_device_families.presentation_family.value() };
+
+	std::float_t queue_priority = 1.0f;
+
+	std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
+	for (std::uint32_t unique_queue_family : unique_queue_families) {
+		VkDeviceQueueCreateInfo queue_info = {};
+		queue_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queue_info.queueFamilyIndex = unique_queue_family;
+		queue_info.queueCount = 1;
+		queue_info.pQueuePriorities = &queue_priority;
+		queue_create_infos.push_back(queue_info);
+	}
+
+	VkPhysicalDeviceFeatures required_features = {};
+	required_features.depthBounds = true; // Has to be true if you want to enable it later
+	required_features.depthClamp = true;
+
+	VkDeviceCreateInfo device_info = {};
+	device_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+	device_info.queueCreateInfoCount = queue_create_infos.size();
+	device_info.pQueueCreateInfos = queue_create_infos.data();
+	device_info.pEnabledFeatures = &required_features;
+	device_info.enabledExtensionCount = required_device_extensions_.size();
+	device_info.ppEnabledExtensionNames = required_device_extensions_.data();
+	device_info.enabledLayerCount = 0;
+
+	VkResult result = vkCreateDevice(physical_device_, &device_info, nullptr, &logical_device_);
+	if (result != VK_SUCCESS) {
+		std::exit(EXIT_FAILURE);
+	}
+
+	vkGetDeviceQueue(logical_device_, picked_device_families.graphics_family.value(), 0, &graphics_queue_);
+	vkGetDeviceQueue(logical_device_, picked_device_families.presentation_family.value(), 0, &present_queue_);
+}
+
+#pragma endregion
+
+#pragma region Presentation
+
+void VulkanGraphics::CreateSurface() {
+	VkResult result = glfwCreateWindowSurface(instance_, window_->GetHandle(), nullptr, &surface_);
+	if (result != VK_SUCCESS) {
+		std::exit(EXIT_FAILURE);
+	}
+}
+
+#pragma endregion
+
 #pragma region Buffers
 
 void VulkanGraphics::CreateVertexBuffer(gsl::span<Vertex> vertices) {
@@ -213,7 +367,15 @@ VulkanGraphics::VulkanGraphics(gsl::not_null<Window*> window) : Graphics(window)
 }
 
 VulkanGraphics::~VulkanGraphics() {
+	if (logical_device_ != VK_NULL_HANDLE) {
+		vkDestroyDevice(logical_device_, nullptr);
+	}
+
 	if (instance_ != VK_NULL_HANDLE) {
+		if (surface_ != VK_NULL_HANDLE) {
+			vkDestroySurfaceKHR(instance_, surface_, nullptr);
+		}
+
 		if (debug_messenger_ != VK_NULL_HANDLE) {
 			vkDestroyDebugUtilsMessengerEXT(instance_, debug_messenger_, nullptr);
 		}
@@ -229,6 +391,9 @@ void VulkanGraphics::Initialize() {
 
 	CreateInstance();
 	SetupDebugMessenger();
+	CreateSurface(); // Surface needs to be created before getting Presentation Queue Family
+	PickPhysicalDevice();
+	CreateLogicalDeviceAndQueues();
 }
 
 #pragma endregion
