@@ -8,6 +8,9 @@ public:
 	explicit OpenGLGraphics(gsl::not_null<Window*> window);
 	~OpenGLGraphics();
 
+	bool BeginFrame() override;
+	void EndFrame() override;
+
 	void CreateVertexBuffer(gsl::span<Vertex> vertices) override;
 	void CreateIndexBuffer(gsl::span<int> indices) override;
 	void CreateTexture() override;

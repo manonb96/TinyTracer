@@ -10,6 +10,9 @@ public:
 
 	void Init();
 
+	virtual bool BeginFrame() = 0;
+	virtual void EndFrame() = 0;
+
 	virtual void CreateVertexBuffer(gsl::span<Vertex> vertices) = 0;
 	virtual void CreateIndexBuffer(gsl::span<int> indices) = 0;
 	virtual void CreateTexture() = 0;

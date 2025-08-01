@@ -340,6 +340,14 @@ void VulkanGraphics::CreateSurface() {
 
 #pragma endregion
 
+#pragma region Drawing
+bool VulkanGraphics::BeginFrame() {
+	return true;
+}
+
+void VulkanGraphics::EndFrame() {
+}
+
 #pragma region Buffers
 
 void VulkanGraphics::CreateVertexBuffer(gsl::span<Vertex> vertices) {
