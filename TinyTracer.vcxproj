@@ -104,14 +104,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>lib\glad\include;lib\glfw-3.3.9.bin.WIN64\include;lib\spdlog\include;lib\gsl\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib\glad\include;lib\glfw-3.3.9.bin.WIN64\include;lib\spdlog\include;lib\gsl\include;lib\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>lib\glfw-3.3.9.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>lib\glfw-3.3.9.bin.WIN64\lib-vc2022;lib\vulkan\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -140,6 +141,7 @@
     <ClInclude Include="src\graphics\graphics.h" />
     <ClInclude Include="src\graphics\opengl\opengl_graphics.h" />
     <ClInclude Include="src\graphics\vertex.h" />
+    <ClInclude Include="src\graphics\vulkan\vulkan_graphics.h" />
     <ClInclude Include="src\utils\base_types.hpp" />
     <ClInclude Include="src\raytracing\camera.hpp" />
     <ClInclude Include="src\utils\constants.hpp" />
@@ -150,6 +152,7 @@
     <ClInclude Include="src\raytracing\raytracer.hpp" />
     <ClInclude Include="src\shaders\shader.hpp" />
     <ClInclude Include="src\utils\precomp.h" />
+    <ClInclude Include="src\utils\utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lib\glad\src\glad.c" />
@@ -158,12 +161,14 @@
     <ClCompile Include="src\graphics\glfw\glfw_window.cpp" />
     <ClCompile Include="src\graphics\graphics.cpp" />
     <ClCompile Include="src\graphics\opengl\opengl_graphics.cpp" />
+    <ClCompile Include="src\graphics\vulkan\vulkan_graphics.cpp" />
     <ClCompile Include="src\raytracing\camera.cpp" />
     <ClCompile Include="src\raytracing\core.cpp" />
     <ClCompile Include="src\raytracing\geometry.cpp" />
     <ClCompile Include="src\raytracing\lights.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\shaders\shader.cpp" />
+    <ClCompile Include="src\utils\utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\basic.frag" />

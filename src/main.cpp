@@ -4,6 +4,7 @@
 #include "graphics/glfw/glfw_initialization.h"
 #include "graphics/glfw/glfw_window.h"
 #include "graphics/opengl/opengl_graphics.h"
+#include "graphics/vulkan/vulkan_graphics.h"
 
 #include "utils/constants.hpp"
 #include "raytracing/core.hpp"
@@ -33,8 +34,10 @@ int main() {
 	};
 
 	// Initialize Graphics API
-#ifdef OPENGL
+#if OPENGL
 	OpenGLGraphics graphics(&window);
+#elif VULKAN
+	VulkanGraphics graphics(&window);
 #endif
 
 	graphics.Init();
