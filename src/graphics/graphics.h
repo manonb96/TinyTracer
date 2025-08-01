@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glfw/glfw_window.h"
+#include "vertex.h"
 
 class Graphics {
 public:
@@ -9,7 +10,7 @@ public:
 
 	void Init();
 
-	virtual void CreateVertexBuffer(gsl::span<float> vertices) = 0;
+	virtual void CreateVertexBuffer(gsl::span<Vertex> vertices) = 0;
 	virtual void CreateIndexBuffer(gsl::span<int> indices) = 0;
 	virtual void CreateTexture() = 0;
 	virtual void RenderIndexedBuffer(unsigned char* pixels, unsigned int shaderID) = 0;

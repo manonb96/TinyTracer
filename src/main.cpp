@@ -19,18 +19,17 @@ int main() {
 	window.TryMoveToPrimaryMonitor();
 
 	// Initialize buffers
-	std::array<float, 20> vertices = {
-		// positions	// texture coordinates
-		-1, -1, 0,		-1, -1,
-		1, -1, 0,		1, -1,
-		-1, 1, 0,		-1, 1,
-		1, 1, 0,		1, 1
+	std::array<Vertex, 4> vertices = {
+		Vertex({-1.0f, 1.0f, 0.0f}, {0.0f, 1.0f}),   // top - left
+		Vertex({1.0f, 1.0f, 0.0f}, {1.0f, 1.0f}),    // top - right
+		Vertex({-1.0f, -1.0f, 0.0f}, {0.0f, 0.0f}),  // bottom - left
+		Vertex({1.0f, -1.0f, 0.0f}, {1.0f, 0.0f}),   // bottom - right
 	};
 
-	// Set element buffer
+	// Vertices are set up in clockwise order in the IndexBuffer
 	std::array<int, 6> indices = {
 		0, 1, 2,
-		1, 2, 3
+		1, 3, 2
 	};
 
 	// Initialize Graphics API

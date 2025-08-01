@@ -8,7 +8,7 @@
 
 void Core::InitializeScene() {
 	mainCamera = new Camera();
-    spheres.push_back(new Sphere(float3(0.f, 0.f, 10.f), 2.f));
+    spheres.push_back(new Sphere(float3(-5.0f, 5.0f, 10.f), 2.f));
     lights.push_back(new Light(float3(-3.f, 2.f, 8.f), float3(1.0f, 1.0f, 1.0f)));
     backgroundColor = float3(0, 0, 0);
 }
