@@ -3,7 +3,7 @@
 
 #include "graphics/glfw/glfw_initialization.h"
 #include "graphics/glfw/glfw_window.h"
-#include "graphics/opengl_graphics.h"
+#include "graphics/opengl/opengl_graphics.h"
 
 #include "utils/constants.hpp"
 #include "raytracing/core.hpp"

@@ -48,7 +48,7 @@
     <ClInclude Include="src\utils\precomp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\opengl_graphics.h">
+    <ClInclude Include="src\graphics\opengl\opengl_graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\glfw\glfw_window.h">
@@ -89,7 +89,7 @@
     <ClCompile Include="src\graphics\glfw\glfw_initialization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\opengl_graphics.cpp">
+    <ClCompile Include="src\graphics\opengl\opengl_graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\glfw\glfw_window.cpp">

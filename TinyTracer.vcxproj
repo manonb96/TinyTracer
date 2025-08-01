@@ -138,7 +138,7 @@
     <ClInclude Include="src\graphics\glfw\glfw_monitor.h" />
     <ClInclude Include="src\graphics\glfw\glfw_window.h" />
     <ClInclude Include="src\graphics\graphics.h" />
-    <ClInclude Include="src\graphics\opengl_graphics.h" />
+    <ClInclude Include="src\graphics\opengl\opengl_graphics.h" />
     <ClInclude Include="src\graphics\vertex.h" />
     <ClInclude Include="src\utils\base_types.hpp" />
     <ClInclude Include="src\raytracing\camera.hpp" />
@@ -157,7 +157,7 @@
     <ClCompile Include="src\graphics\glfw\glfw_monitor.cpp" />
     <ClCompile Include="src\graphics\glfw\glfw_window.cpp" />
     <ClCompile Include="src\graphics\graphics.cpp" />
-    <ClCompile Include="src\graphics\opengl_graphics.cpp" />
+    <ClCompile Include="src\graphics\opengl\opengl_graphics.cpp" />
     <ClCompile Include="src\raytracing\camera.cpp" />
     <ClCompile Include="src\raytracing\core.cpp" />
     <ClCompile Include="src\raytracing\geometry.cpp" />

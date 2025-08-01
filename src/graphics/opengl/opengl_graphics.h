@@ -1,7 +1,7 @@
 #pragma once
 
-#include "graphics.h"
-#include "glfw/glfw_window.h"
+#include "../graphics.h"
+#include "../glfw/glfw_window.h"
 
 class OpenGLGraphics final : public Graphics {
 public:
