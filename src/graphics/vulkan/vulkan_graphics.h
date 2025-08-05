@@ -39,6 +39,10 @@ private:
 	void PickPhysicalDevice();
 	void CreateLogicalDeviceAndQueues();
 	void CreateSurface();
+	void CreateSwapChain();
+	void CreateImageViews();
+
+	void CleanupSwapChain();
 
 	// Static utils
 	static gsl::span<gsl::czstring> GetSuggestedInstanceExtensions();
@@ -59,6 +63,13 @@ private:
 	bool AreAllDeviceExtensionsSupported(VkPhysicalDevice device);
 	std::vector<VkExtensionProperties> GetDeviceAvailableExtensions(VkPhysicalDevice device);
 
+	VkSurfaceFormatKHR ChooseSwapSurfaceFormat(gsl::span<VkSurfaceFormatKHR> formats);
+	VkPresentModeKHR ChooseSwapPresentMode(gsl::span<VkPresentModeKHR> modes);
+	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+	std::uint32_t ChooseSwapImageCount(const VkSurfaceCapabilitiesKHR& capabilities);
+
+	VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flag);
+
 	// Member variables
 	VkInstance instance_ = VK_NULL_HANDLE;
 	VkDebugUtilsMessengerEXT debug_messenger_ = VK_NULL_HANDLE;
@@ -70,6 +81,13 @@ private:
 	VkQueue present_queue_ = VK_NULL_HANDLE;
 
 	VkSurfaceKHR surface_ = VK_NULL_HANDLE;
+	VkSwapchainKHR swap_chain_ = VK_NULL_HANDLE;
+	VkSurfaceFormatKHR surface_format_;
+	VkPresentModeKHR present_mode_;
+	VkExtent2D extent_;
+	std::vector<VkImage> swap_chain_images_;
+	std::vector<VkImageView> swap_chain_image_views_;
+	std::vector<VkFramebuffer> swap_chain_framebuffers_;
 
 	// Validation
 	bool validation_enabled_ = false;
