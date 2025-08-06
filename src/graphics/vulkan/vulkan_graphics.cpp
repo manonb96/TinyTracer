@@ -651,12 +651,12 @@ void VulkanGraphics::CreateGraphicsPipeline() {
 	VkPipelineLayoutCreateInfo layout_info = {};
 	layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 
-	VkPushConstantRange model_matrix_range = {};
-	model_matrix_range.offset = 0;
-	model_matrix_range.size = 16 * sizeof(float); // TODO: Change to matrix
-	model_matrix_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	layout_info.pushConstantRangeCount = 1;
-	layout_info.pPushConstantRanges = &model_matrix_range;
+	// VkPushConstantRange model_matrix_range = {};
+	// model_matrix_range.offset = 0;
+	// model_matrix_range.size = 16 * sizeof(float); // TODO: Change to matrix
+	// model_matrix_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	// layout_info.pushConstantRangeCount = 1;
+	// layout_info.pPushConstantRanges = &model_matrix_range;
 
 	std::array<VkDescriptorSetLayout, 2> set_layouts = { uniform_set_layout_, texture_set_layout_ };
 	layout_info.setLayoutCount = set_layouts.size();
@@ -1046,7 +1046,12 @@ void VulkanGraphics::DestroyBuffer(BufferHandle handle) {
 }
 
 void VulkanGraphics::RenderIndexedBuffer(unsigned int shaderID) {
-
+	VkDeviceSize offset = 0;
+	vkCmdBindDescriptorSets(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &uniform_set_, 0, nullptr);
+	vkCmdBindDescriptorSets(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 1, 1, &texture_handle_.set, 0, nullptr);
+	vkCmdBindVertexBuffers(command_buffer_, 0, 1, &vertex_buffer_.buffer, &offset);
+	vkCmdBindIndexBuffer(command_buffer_, index_buffer_.buffer, 0, VK_INDEX_TYPE_UINT32);
+	vkCmdDrawIndexed(command_buffer_, index_buffer_.element_count, 1, 0, 0, 0);
 }
 
 VkCommandBuffer VulkanGraphics::BeginTransientCommandBuffer() {
@@ -1078,6 +1083,12 @@ void VulkanGraphics::EndTransientCommandBuffer(VkCommandBuffer command_buffer) {
 	vkQueueSubmit(graphics_queue_, 1, &submit_info, VK_NULL_HANDLE);
 	vkQueueWaitIdle(graphics_queue_);
 	vkFreeCommandBuffers(logical_device_, command_pool_, 1, &command_buffer);
+}
+
+void VulkanGraphics::CreateUniformBuffers() {
+	VkDeviceSize buffer_size = sizeof(UniformTransformations);
+	uniform_buffer_ = CreateBuffer(buffer_size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 1);
+	vkMapMemory(logical_device_, uniform_buffer_.memory, 0, buffer_size, 0, &uniform_buffer_location_);
 }
 
 void VulkanGraphics::CreateDescriptorSetLayouts() {
@@ -1113,6 +1124,20 @@ void VulkanGraphics::CreateDescriptorSetLayouts() {
 }
 
 void VulkanGraphics::CreateDescriptorPools() {
+	VkDescriptorPoolSize uniform_pool_size = {};
+	uniform_pool_size.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	uniform_pool_size.descriptorCount = 1;
+
+	VkDescriptorPoolCreateInfo uniform_pool_info = {};
+	uniform_pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	uniform_pool_info.poolSizeCount = 1;
+	uniform_pool_info.pPoolSizes = &uniform_pool_size;
+	uniform_pool_info.maxSets = 1;
+
+	if (vkCreateDescriptorPool(logical_device_, &uniform_pool_info, nullptr, &uniform_pool_) != VK_SUCCESS) {
+		std::exit(EXIT_FAILURE);
+	}
+
 	VkPhysicalDeviceProperties properties = {};
 	vkGetPhysicalDeviceProperties(physical_device_, &properties);
 
@@ -1130,6 +1155,35 @@ void VulkanGraphics::CreateDescriptorPools() {
 	if (vkCreateDescriptorPool(logical_device_, &texture_pool_info, nullptr, &texture_pool_) != VK_SUCCESS) {
 		std::exit(EXIT_FAILURE);
 	}
+}
+
+void VulkanGraphics::CreateDescriptorSets() {
+	VkDescriptorSetAllocateInfo set_info = {};
+	set_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	set_info.descriptorPool = uniform_pool_;
+	set_info.descriptorSetCount = 1;
+	set_info.pSetLayouts = &uniform_set_layout_;
+
+	VkResult result = vkAllocateDescriptorSets(logical_device_, &set_info, &uniform_set_);
+	if (result != VK_SUCCESS) {
+		std::exit(EXIT_FAILURE);
+	}
+
+	VkDescriptorBufferInfo buffer_info = {};
+	buffer_info.buffer = uniform_buffer_.buffer;
+	buffer_info.offset = 0;
+	buffer_info.range = sizeof(UniformTransformations);
+
+	VkWriteDescriptorSet descriptor_write = {};
+	descriptor_write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptor_write.dstSet = uniform_set_;
+	descriptor_write.dstBinding = 0;
+	descriptor_write.dstArrayElement = 0;
+	descriptor_write.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptor_write.descriptorCount = 1;
+	descriptor_write.pBufferInfo = &buffer_info;
+
+	vkUpdateDescriptorSets(logical_device_, 1, &descriptor_write, 0, nullptr);
 }
 
 #pragma endregion
@@ -1362,6 +1416,12 @@ VulkanGraphics::~VulkanGraphics() {
 			vkDestroyDescriptorSetLayout(logical_device_, uniform_set_layout_, nullptr);
 		}
 
+		if (uniform_pool_ != VK_NULL_HANDLE) {
+			vkDestroyDescriptorPool(logical_device_, uniform_pool_, nullptr);
+		}
+
+		DestroyBuffer(uniform_buffer_);
+
 		if (image_available_signal_ != VK_NULL_HANDLE) {
 			vkDestroySemaphore(logical_device_, image_available_signal_, nullptr);
 		}
@@ -1425,7 +1485,9 @@ void VulkanGraphics::Initialize() {
 	CreateCommandPool();
 	CreateCommandBuffer();
 	CreateSignals();
+	CreateUniformBuffers();
 	CreateDescriptorPools();
+	CreateDescriptorSets();
 	CreateTextureSampler();
 }
 

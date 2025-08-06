@@ -50,7 +50,9 @@ private:
 	void CreateCommandPool();
 	void CreateCommandBuffer();
 	void CreateSignals();
+	void CreateUniformBuffers();
 	void CreateDescriptorPools();
+	void CreateDescriptorSets();
 	void CreateTextureSampler();
 
 	void RecreateSwapChain();
@@ -137,6 +139,10 @@ private:
 	std::uint32_t current_image_index_ = 0;
 
 	VkDescriptorSetLayout uniform_set_layout_ = VK_NULL_HANDLE;
+	VkDescriptorPool uniform_pool_ = VK_NULL_HANDLE;
+	VkDescriptorSet uniform_set_ = VK_NULL_HANDLE;
+	BufferHandle uniform_buffer_ = {};
+	void* uniform_buffer_location_ = nullptr;
 
 	VkDescriptorSetLayout texture_set_layout_ = VK_NULL_HANDLE;
 	VkDescriptorPool texture_pool_ = VK_NULL_HANDLE;

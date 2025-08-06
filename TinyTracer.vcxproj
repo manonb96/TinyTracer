@@ -140,6 +140,7 @@
     <ClInclude Include="src\graphics\glfw\glfw_window.h" />
     <ClInclude Include="src\graphics\graphics.h" />
     <ClInclude Include="src\graphics\opengl\opengl_graphics.h" />
+    <ClInclude Include="src\graphics\uniform_transformations.h" />
     <ClInclude Include="src\graphics\vertex.h" />
     <ClInclude Include="src\graphics\vulkan\buffer_handle.h" />
     <ClInclude Include="src\graphics\vulkan\texture_handle.h" />
