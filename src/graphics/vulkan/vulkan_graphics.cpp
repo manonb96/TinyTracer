@@ -987,9 +987,54 @@ void VulkanGraphics::CreateDescriptorSetLayouts() {
 	}
 }
 
+void VulkanGraphics::CreateDescriptorPools() {
+	VkPhysicalDeviceProperties properties = {};
+	vkGetPhysicalDeviceProperties(physical_device_, &properties);
+
+	VkDescriptorPoolSize texture_pool_size = {};
+	texture_pool_size.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	texture_pool_size.descriptorCount = properties.limits.maxSamplerAllocationCount;
+
+	VkDescriptorPoolCreateInfo texture_pool_info = {};
+	texture_pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	texture_pool_info.poolSizeCount = 1;
+	texture_pool_info.pPoolSizes = &texture_pool_size;
+	texture_pool_info.maxSets = properties.limits.maxSamplerAllocationCount;
+	texture_pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT; 
+
+	if (vkCreateDescriptorPool(logical_device_, &texture_pool_info, nullptr, &texture_pool_) != VK_SUCCESS) {
+		std::exit(EXIT_FAILURE);
+	}
+}
+
 #pragma endregion
 
 #pragma region Textures 
+
+void VulkanGraphics::CreateTextureSampler() {
+	VkSamplerCreateInfo sampler_info = {};
+	sampler_info.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+	sampler_info.magFilter = VK_FILTER_LINEAR;
+	sampler_info.minFilter = VK_FILTER_LINEAR;
+	sampler_info.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+	sampler_info.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+	sampler_info.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT; 
+	sampler_info.anisotropyEnable = VK_FALSE;
+	sampler_info.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+	sampler_info.unnormalizedCoordinates = VK_FALSE;
+	sampler_info.compareEnable = VK_FALSE;
+	sampler_info.compareOp = VK_COMPARE_OP_ALWAYS;
+	sampler_info.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+	sampler_info.mipLodBias = 0.0f;
+	sampler_info.minLod = 0.0f;
+	sampler_info.maxLod = 0.0f;
+	sampler_info.maxAnisotropy = 1.0f;
+
+	if (vkCreateSampler(logical_device_, &sampler_info, nullptr, &texture_sampler_) != VK_SUCCESS) {
+		std::exit(EXIT_FAILURE);
+	}
+}
+
 void VulkanGraphics::CreateTexture() {
 
 }
@@ -1006,8 +1051,16 @@ VulkanGraphics::~VulkanGraphics() {
 		 
 		CleanupSwapChain();
 
+		if (texture_pool_ != VK_NULL_HANDLE) {
+			vkDestroyDescriptorPool(logical_device_, texture_pool_, nullptr);
+		}
+
 		if (texture_set_layout_ != VK_NULL_HANDLE) {
 			vkDestroyDescriptorSetLayout(logical_device_, texture_set_layout_, nullptr);
+		}
+
+		if (texture_sampler_ != VK_NULL_HANDLE) {
+			vkDestroySampler(logical_device_, texture_sampler_, nullptr);
 		}
 
 		if (uniform_set_layout_ != VK_NULL_HANDLE) {
@@ -1077,6 +1130,8 @@ void VulkanGraphics::Initialize() {
 	CreateCommandPool();
 	CreateCommandBuffer();
 	CreateSignals();
+	CreateDescriptorPools();
+	CreateTextureSampler();
 }
 
 #pragma endregion

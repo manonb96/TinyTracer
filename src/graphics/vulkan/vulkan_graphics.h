@@ -48,6 +48,8 @@ private:
 	void CreateCommandPool();
 	void CreateCommandBuffer();
 	void CreateSignals();
+	void CreateDescriptorPools();
+	void CreateTextureSampler();
 
 	void RecreateSwapChain();
 	void CleanupSwapChain();
@@ -121,6 +123,8 @@ private:
 	VkDescriptorSetLayout uniform_set_layout_ = VK_NULL_HANDLE;
 
 	VkDescriptorSetLayout texture_set_layout_ = VK_NULL_HANDLE;
+	VkDescriptorPool texture_pool_ = VK_NULL_HANDLE;
+	VkSampler texture_sampler_ = VK_NULL_HANDLE;
 
 	// Validation
 	bool validation_enabled_ = false;
