@@ -41,6 +41,9 @@ private:
 	void CreateSurface();
 	void CreateSwapChain();
 	void CreateImageViews();
+	void CreateRenderPass();
+	void CreateGraphicsPipeline();
+	void CreateDescriptorSetLayouts();
 
 	void CleanupSwapChain();
 
@@ -68,7 +71,11 @@ private:
 	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 	std::uint32_t ChooseSwapImageCount(const VkSurfaceCapabilitiesKHR& capabilities);
 
+	VkShaderModule CreateShaderModule(gsl::span<std::uint8_t> buffer);
+
 	VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flag);
+	VkViewport GetViewport();
+	VkRect2D GetScissor();
 
 	// Member variables
 	VkInstance instance_ = VK_NULL_HANDLE;
@@ -88,6 +95,13 @@ private:
 	std::vector<VkImage> swap_chain_images_;
 	std::vector<VkImageView> swap_chain_image_views_;
 	std::vector<VkFramebuffer> swap_chain_framebuffers_;
+
+	VkPipelineLayout pipeline_layout_ = VK_NULL_HANDLE;
+	VkRenderPass render_pass_ = VK_NULL_HANDLE;
+	VkPipeline pipeline_ = VK_NULL_HANDLE;
+
+	VkDescriptorSetLayout uniform_set_layout_ = VK_NULL_HANDLE;
+	VkDescriptorSetLayout texture_set_layout_ = VK_NULL_HANDLE;
 
 	// Validation
 	bool validation_enabled_ = false;
