@@ -1,6 +1,7 @@
 #pragma once
 #include <vulkan/vulkan.h>
 #include "../graphics.h"
+#include "buffer_handle.h"
 #include "../glfw/glfw_window.h"
 
 class VulkanGraphics final : public Graphics {
@@ -53,6 +54,7 @@ private:
 
 	void RecreateSwapChain();
 	void CleanupSwapChain();
+	void DestroyBuffer(BufferHandle handle);
 
 	// Rendering
 	void BeginCommands();
@@ -83,6 +85,11 @@ private:
 	std::uint32_t ChooseSwapImageCount(const VkSurfaceCapabilitiesKHR& capabilities);
 
 	VkShaderModule CreateShaderModule(gsl::span<std::uint8_t> buffer);
+	std::uint32_t FindMemoryType(std::uint32_t type_bits_filter, VkMemoryPropertyFlags required_properties);
+
+	BufferHandle CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, std::uint32_t element_count);
+	VkCommandBuffer BeginTransientCommandBuffer();
+	void EndTransientCommandBuffer(VkCommandBuffer command_buffer);
 
 	VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flag);
 	VkViewport GetViewport();
@@ -91,6 +98,8 @@ private:
 	// Member variables
 	VkInstance instance_ = VK_NULL_HANDLE;
 	VkDebugUtilsMessengerEXT debug_messenger_ = VK_NULL_HANDLE;
+	BufferHandle vertex_buffer_ = {};
+	BufferHandle index_buffer_ = {};
 
 	std::array<gsl::czstring, 1> required_device_extensions_ = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	VkPhysicalDevice physical_device_ = VK_NULL_HANDLE;

@@ -943,16 +943,141 @@ void VulkanGraphics::EndFrame() {
 
 #pragma region Buffers
 
-void VulkanGraphics::CreateVertexBuffer(gsl::span<Vertex> vertices) {
+std::uint32_t VulkanGraphics::FindMemoryType(std::uint32_t type_bits_filter, VkMemoryPropertyFlags required_properties) {
+	VkPhysicalDeviceMemoryProperties memory_properties;
+	vkGetPhysicalDeviceMemoryProperties(physical_device_, &memory_properties);
+	gsl::span<VkMemoryType> memory_types(memory_properties.memoryTypes, memory_properties.memoryTypeCount);
 
+	for (std::uint32_t i = 0; i < memory_types.size(); i++) {
+		bool passes_filter = type_bits_filter & (1 << i);
+		bool has_property_flags = memory_types[i].propertyFlags & required_properties;
+		if (passes_filter && has_property_flags) {
+			return i;
+		}
+	}
+
+	throw std::runtime_error("Cannot find memory type!");
+}
+
+BufferHandle VulkanGraphics::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, std::uint32_t element_count) {
+	BufferHandle handle = {};
+	handle.element_count = element_count;
+
+	VkBufferCreateInfo buffer_info = {};
+	buffer_info.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	buffer_info.size = size;
+	buffer_info.usage = usage;
+	buffer_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+	VkResult result = vkCreateBuffer(logical_device_, &buffer_info, nullptr, &handle.buffer);
+	if (result != VK_SUCCESS) {
+		throw std::runtime_error("Failed to create buffer!");
+	}
+
+	VkMemoryRequirements memory_requirements;
+	vkGetBufferMemoryRequirements(logical_device_, handle.buffer, &memory_requirements);
+
+	std::uint32_t chosen_memory_type = FindMemoryType(memory_requirements.memoryTypeBits, properties);
+
+	VkMemoryAllocateInfo allocation_info = {};
+	allocation_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+	allocation_info.allocationSize = memory_requirements.size;
+	allocation_info.memoryTypeIndex = chosen_memory_type;
+
+	VkResult allocation_result = vkAllocateMemory(logical_device_, &allocation_info, nullptr, &handle.memory);
+	if (allocation_result != VK_SUCCESS) {
+		throw std::runtime_error("Failed to allocate buffer memory!");
+	}
+
+	vkBindBufferMemory(logical_device_, handle.buffer, handle.memory, 0);
+	return handle;
+}
+
+void VulkanGraphics::CreateVertexBuffer(gsl::span<Vertex> vertices) {
+	VkDeviceSize size = sizeof(Vertex) * vertices.size();
+	BufferHandle staging_handle = CreateBuffer(size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, vertices.size());
+
+	void* data;
+	vkMapMemory(logical_device_, staging_handle.memory, 0, size, 0, &data);
+	std::memcpy(data, vertices.data(), size);
+	vkUnmapMemory(logical_device_, staging_handle.memory);
+
+	vertex_buffer_ = CreateBuffer(size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertices.size());
+
+	VkCommandBuffer transient_commands = BeginTransientCommandBuffer();
+
+	VkBufferCopy copy_info = {};
+	copy_info.srcOffset = 0;
+	copy_info.dstOffset = 0;
+	copy_info.size = size;
+	vkCmdCopyBuffer(transient_commands, staging_handle.buffer, vertex_buffer_.buffer, 1, &copy_info);
+
+	EndTransientCommandBuffer(transient_commands);
+	DestroyBuffer(staging_handle);
 }
 
 void VulkanGraphics::CreateIndexBuffer(gsl::span<int> indices) {
+	VkDeviceSize size = sizeof(std::uint32_t) * indices.size();
+	BufferHandle staging_handle = CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, indices.size());
 
+	void* data;
+	vkMapMemory(logical_device_, staging_handle.memory, 0, size, 0, &data);
+	std::memcpy(data, indices.data(), size);
+	vkUnmapMemory(logical_device_, staging_handle.memory);
+
+	index_buffer_ = CreateBuffer(size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indices.size());
+
+	VkCommandBuffer transient_commands = BeginTransientCommandBuffer();
+
+	VkBufferCopy copy_info = {};
+	copy_info.srcOffset = 0;
+	copy_info.dstOffset = 0;
+	copy_info.size = size;
+	vkCmdCopyBuffer(transient_commands, staging_handle.buffer, index_buffer_.buffer, 1, &copy_info);
+
+	EndTransientCommandBuffer(transient_commands);
+	DestroyBuffer(staging_handle);
+}
+
+void VulkanGraphics::DestroyBuffer(BufferHandle handle) {
+	vkDeviceWaitIdle(logical_device_);
+	vkDestroyBuffer(logical_device_, handle.buffer, nullptr);
+	vkFreeMemory(logical_device_, handle.memory, nullptr);
 }
 
 void VulkanGraphics::RenderIndexedBuffer(unsigned char* pixels, unsigned int shaderID) {
 
+}
+
+VkCommandBuffer VulkanGraphics::BeginTransientCommandBuffer() {
+	VkCommandBufferAllocateInfo allocation_info = {};
+	allocation_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	allocation_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	allocation_info.commandPool = command_pool_;
+	allocation_info.commandBufferCount = 1;
+
+	VkCommandBuffer buffer;
+	vkAllocateCommandBuffers(logical_device_, &allocation_info, &buffer);
+
+	VkCommandBufferBeginInfo begin_info = {};
+	begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+	vkBeginCommandBuffer(buffer, &begin_info);
+
+	return buffer;
+}
+
+void VulkanGraphics::EndTransientCommandBuffer(VkCommandBuffer command_buffer) {
+	vkEndCommandBuffer(command_buffer);
+
+	VkSubmitInfo submit_info = {};
+	submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submit_info.commandBufferCount = 1;
+	submit_info.pCommandBuffers = &command_buffer;
+
+	vkQueueSubmit(graphics_queue_, 1, &submit_info, VK_NULL_HANDLE);
+	vkQueueWaitIdle(graphics_queue_);
+	vkFreeCommandBuffers(logical_device_, command_pool_, 1, &command_buffer);
 }
 
 void VulkanGraphics::CreateDescriptorSetLayouts() {
@@ -1048,6 +1173,9 @@ VulkanGraphics::VulkanGraphics(gsl::not_null<Window*> window) : Graphics(window)
 VulkanGraphics::~VulkanGraphics() {
 	if (logical_device_ != VK_NULL_HANDLE) {
 		vkDeviceWaitIdle(logical_device_);
+
+		DestroyBuffer(vertex_buffer_);
+		DestroyBuffer(index_buffer_);
 		 
 		CleanupSwapChain();
 
