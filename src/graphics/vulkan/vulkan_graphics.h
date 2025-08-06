@@ -44,8 +44,17 @@ private:
 	void CreateRenderPass();
 	void CreateGraphicsPipeline();
 	void CreateDescriptorSetLayouts();
+	void CreateFramebuffers();
+	void CreateCommandPool();
+	void CreateCommandBuffer();
+	void CreateSignals();
 
+	void RecreateSwapChain();
 	void CleanupSwapChain();
+
+	// Rendering
+	void BeginCommands();
+	void EndCommands();
 
 	// Static utils
 	static gsl::span<gsl::czstring> GetSuggestedInstanceExtensions();
@@ -100,7 +109,17 @@ private:
 	VkRenderPass render_pass_ = VK_NULL_HANDLE;
 	VkPipeline pipeline_ = VK_NULL_HANDLE;
 
+	VkCommandPool command_pool_ = VK_NULL_HANDLE;
+	VkCommandBuffer command_buffer_ = VK_NULL_HANDLE;
+
+	VkSemaphore image_available_signal_ = VK_NULL_HANDLE;
+	VkSemaphore render_finished_signal_ = VK_NULL_HANDLE;
+	VkFence still_rendering_fence_ = VK_NULL_HANDLE;
+
+	std::uint32_t current_image_index_ = 0;
+
 	VkDescriptorSetLayout uniform_set_layout_ = VK_NULL_HANDLE;
+
 	VkDescriptorSetLayout texture_set_layout_ = VK_NULL_HANDLE;
 
 	// Validation
