@@ -141,6 +141,7 @@
     <ClInclude Include="src\graphics\graphics.h" />
     <ClInclude Include="src\graphics\opengl\opengl_graphics.h" />
     <ClInclude Include="src\graphics\vertex.h" />
+    <ClInclude Include="src\graphics\vulkan\buffer_handle.h" />
     <ClInclude Include="src\graphics\vulkan\vulkan_graphics.h" />
     <ClInclude Include="src\utils\base_types.hpp" />
     <ClInclude Include="src\raytracing\camera.hpp" />
