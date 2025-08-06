@@ -1,8 +1,9 @@
 #pragma once
 #include <vulkan/vulkan.h>
 #include "../graphics.h"
-#include "buffer_handle.h"
 #include "../glfw/glfw_window.h"
+#include "buffer_handle.h"
+#include "texture_handle.h"
 
 class VulkanGraphics final : public Graphics {
 public:
@@ -14,8 +15,8 @@ public:
 
 	void CreateVertexBuffer(gsl::span<Vertex> vertices) override;
 	void CreateIndexBuffer(gsl::span<int> indices) override;
-	void CreateTexture() override;
-	void RenderIndexedBuffer(unsigned char* pixels, unsigned int shaderID) override;
+	void CreateTexture(unsigned char* pixels) override;
+	void RenderIndexedBuffer(unsigned int shaderID) override;
 
 private:
 	struct QueueFamilyIndices {
@@ -55,6 +56,7 @@ private:
 	void RecreateSwapChain();
 	void CleanupSwapChain();
 	void DestroyBuffer(BufferHandle handle);
+	void DestroyTexture(TextureHandle handle);
 
 	// Rendering
 	void BeginCommands();
@@ -91,7 +93,11 @@ private:
 	VkCommandBuffer BeginTransientCommandBuffer();
 	void EndTransientCommandBuffer(VkCommandBuffer command_buffer);
 
+	TextureHandle CreateImage(int2 size, VkFormat format, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
+	void TransitionImageLayout(VkImage image, VkImageLayout old_layout, VkImageLayout new_layout);
+	void CopyBufferToImage(VkBuffer buffer, VkImage image, int2 image_size);
 	VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flag);
+	
 	VkViewport GetViewport();
 	VkRect2D GetScissor();
 
@@ -100,6 +106,7 @@ private:
 	VkDebugUtilsMessengerEXT debug_messenger_ = VK_NULL_HANDLE;
 	BufferHandle vertex_buffer_ = {};
 	BufferHandle index_buffer_ = {};
+	TextureHandle texture_handle_ = {};
 
 	std::array<gsl::czstring, 1> required_device_extensions_ = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	VkPhysicalDevice physical_device_ = VK_NULL_HANDLE;

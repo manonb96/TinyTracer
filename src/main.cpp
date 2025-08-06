@@ -43,15 +43,16 @@ int main() {
 	graphics.Init();
 	graphics.CreateVertexBuffer(vertices);
 	graphics.CreateIndexBuffer(indices);
-	graphics.CreateTexture();
-
-	// Set up shaders and textures
-	Shader shader("shaders/basic.vert", "shaders/basic.frag");
-	unsigned char* pixels = new unsigned char[WIDTH * HEIGHT * 3];
 
 	// Initialize ray tracing core
 	Core* core = new Core();
 	core->InitializeScene();
+
+	// Set up shaders and textures
+	Shader shader("shaders/basic.vert", "shaders/basic.frag");
+	unsigned char* pixels = new unsigned char[WIDTH * HEIGHT * 4];
+	core->RenderScene(pixels);
+	graphics.CreateTexture(pixels);
 
 	while (!window.ShouldClose()) {
 		glfwPollEvents();
@@ -61,8 +62,7 @@ int main() {
 
 		if (graphics.BeginFrame()) {
 			// Render scene
-			core->RenderScene(pixels);
-			graphics.RenderIndexedBuffer(pixels, shader.ID);
+			graphics.RenderIndexedBuffer(shader.ID);
 
 			// Wrap up
 			graphics.EndFrame();
