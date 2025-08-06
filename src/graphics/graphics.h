@@ -2,6 +2,7 @@
 
 #include "glfw/glfw_window.h"
 #include "vertex.h"
+#include "uniform_transformations.h"
 
 class Graphics {
 public:
