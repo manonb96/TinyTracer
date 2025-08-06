@@ -13,8 +13,8 @@ public:
 
 	void CreateVertexBuffer(gsl::span<Vertex> vertices) override;
 	void CreateIndexBuffer(gsl::span<int> indices) override;
-	void CreateTexture() override;
-	void RenderIndexedBuffer(unsigned char* pixels, unsigned int shaderID) override;
+	void CreateTexture(unsigned char* pixels) override;
+	void RenderIndexedBuffer(unsigned int shaderID) override;
 
 	// TODO: Add Destroy-methods
 private:
@@ -25,4 +25,5 @@ private:
 	unsigned int VBO_ = 0;
 	unsigned int EBO_ = 0;
 	unsigned int texture_ = 0;
+	unsigned char* pixels_;
 };

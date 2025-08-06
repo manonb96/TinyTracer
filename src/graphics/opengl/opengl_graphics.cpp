@@ -48,9 +48,9 @@ void OpenGLGraphics::CreateIndexBuffer(gsl::span<int> indices) {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), indices.data(), GL_STATIC_DRAW);
 }
 
-void OpenGLGraphics::RenderIndexedBuffer(unsigned char* pixels, unsigned int shaderID) {
+void OpenGLGraphics::RenderIndexedBuffer(unsigned int shaderID) {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels_);
 	glUseProgram(shaderID);
 	glBindVertexArray(VAO_);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -60,8 +60,9 @@ void OpenGLGraphics::RenderIndexedBuffer(unsigned char* pixels, unsigned int sha
 
 #pragma region Texture
 
-void OpenGLGraphics::CreateTexture()
+void OpenGLGraphics::CreateTexture(unsigned char* pixels)
 {
+	pixels_ = pixels;
 	glGenTextures(1, &texture_);
 	glBindTexture(GL_TEXTURE_2D, texture_);
 	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };

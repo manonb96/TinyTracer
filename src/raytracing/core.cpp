@@ -28,6 +28,7 @@ void Core::RenderScene(unsigned char* pixels) {
         for (int x = 0; x < WIDTH; x++) {
             Ray* primaryRay = mainCamera->GeneratePrimaryRay(x, y);
             float3 color = backgroundColor;
+            float alpha = 1.0f;
             Sphere* nearestObject = nullptr;
             float tNear = INFINITY;
 
@@ -69,10 +70,11 @@ void Core::RenderScene(unsigned char* pixels) {
             }
             delete primaryRay;
 
-            int offset = (y * WIDTH + x) * 3;
+            int offset = (y * WIDTH + x) * 4;
             pixels[offset + 0] = (int)(color.x * 255.f);
             pixels[offset + 1] = (int)(color.y * 255.f);
             pixels[offset + 2] = (int)(color.z * 255.f);
+            pixels[offset + 3] = (int)(alpha * 255.f);
         }
     }
 }
