@@ -1,13 +1,16 @@
 #include "shader.hpp"
+#include <spdlog/spdlog.h>
 
 // ***********************************************************
 // Source: https://learnopengl.com/Getting-started/Shaders
 // ***********************************************************
 
+std::string GetCompileShaderCommand(const char* path) {
+	return std::format("glslc {} -o {}.spv", path, path);
+}
+
 // TODO: Refactor
-// - Split into different constructions based on Graphics API
-// - Use SPDLog
-Shader::Shader(const char* vertexPath, const char* fragmentPath) {
+Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath) {
 
 #if OPENGL
 	std::string vertexCode;
@@ -19,8 +22,8 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try
     {
-        vShaderFile.open(vertexPath);
-        fShaderFile.open(fragmentPath);
+        vShaderFile.open(vertexShaderPath);
+        fShaderFile.open(fragmentShaderPath);
         std::stringstream vShaderStream, fShaderStream;
         vShaderStream << vShaderFile.rdbuf();
         fShaderStream << fShaderFile.rdbuf();
@@ -31,7 +34,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     }
     catch (std::ifstream::failure e)
     {
-        std::cerr << "[ERROR] FragmentShader file not successfully read" << std::endl;
+		spdlog::error("Could not read shader files");
     }
 
     const char* vertexShaderSource = vertexCode.c_str();
@@ -47,7 +50,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	if (!vsSuccess) {
 		char infoLog[512];
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cerr << "[ERROR] Vertexshader compilation failed: \n" << infoLog << std::endl;
+		spdlog::error("[OpenGL Error] Vertex shader compilation failed: {}", infoLog);
 	}
 
 	unsigned int fragmentShader;
@@ -60,7 +63,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	if (!fsSuccess) {
 		char infoLog[512];
 		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cerr << "[ERROR] Fragmentshader compilation failed: \n" << infoLog << std::endl;
+		spdlog::error("[OpenGL Error] Fragment shader compilation failed: {}", infoLog);
 	}
 
 	ID = glCreateProgram();
@@ -73,7 +76,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	if (!spSuccess) {
 		char infoLog[512];
 		glGetProgramInfoLog(ID, 512, NULL, infoLog);
-		std::cerr << "[ERROR] Shaderprogram failed: \n" << infoLog << std::endl;
+		spdlog::error("[OpenGL Error] Shaderprogram failed: {}", infoLog);
 	}
 
 	glDeleteShader(vertexShader);
@@ -82,6 +85,18 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 	pixelColorLocation = glGetUniformLocation(ID, "pixelColor");
 #elif VULKAN
 	ID = 0;
+	
+	// Create SPIR-V files
+	std::string compileVertexShaderCommand = GetCompileShaderCommand(vertexShaderPath);
+
+	if (system(compileVertexShaderCommand.c_str()) != 0) {
+		spdlog::error("[Vulkan Error] Vertex shader compilation failed");
+	}
+
+	std::string compileFragmentShaderCommand = GetCompileShaderCommand(fragmentShaderPath);
+	if (system(compileFragmentShaderCommand.c_str()) != 0) {
+		spdlog::error("[Vulkan Error] Fragment shader compilation failed");
+	}
 #endif
 }
 
