@@ -15,6 +15,7 @@ public:
 	void CreateIndexBuffer(gsl::span<int> indices) override;
 	void CreateTexture(unsigned char* pixels) override;
 	void RenderIndexedBuffer(unsigned int shaderID) override;
+	void SetViewProjection(glm::mat4 view, glm::mat4 projection) override;
 
 	// TODO: Add Destroy-methods
 private:

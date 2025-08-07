@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <gtc/matrix_transform.hpp>
 
 #include "graphics/glfw/glfw_initialization.h"
 #include "graphics/glfw/glfw_window.h"
@@ -33,6 +34,11 @@ int main() {
 		1, 3, 2
 	};
 
+#if VULKAN
+	// Set up shaders
+	Shader shader("shaders/basic.vert", "shaders/basic.frag");
+#endif
+
 	// Initialize Graphics API
 #if OPENGL
 	OpenGLGraphics graphics(&window);
@@ -44,12 +50,21 @@ int main() {
 	graphics.CreateVertexBuffer(vertices);
 	graphics.CreateIndexBuffer(indices);
 
+	// Set view projection
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
+	graphics.SetViewProjection(view, projection);
+
 	// Initialize ray tracing core
 	Core* core = new Core();
 	core->InitializeScene();
 
-	// Set up shaders and textures
+#if OPENGL
+	// Set up shaders
 	Shader shader("shaders/basic.vert", "shaders/basic.frag");
+#endif
+	
+	// Calculate pixel values and set up textures
 	unsigned char* pixels = new unsigned char[WIDTH * HEIGHT * 4];
 	core->RenderScene(pixels);
 	graphics.CreateTexture(pixels);

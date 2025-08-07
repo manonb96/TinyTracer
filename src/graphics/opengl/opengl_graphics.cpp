@@ -56,6 +56,8 @@ void OpenGLGraphics::RenderIndexedBuffer(unsigned int shaderID) {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
+void OpenGLGraphics::SetViewProjection(glm::mat4 view, glm::mat4 projection) { }
+
 #pragma endregion
 
 #pragma region Texture
