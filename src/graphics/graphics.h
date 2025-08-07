@@ -16,6 +16,7 @@ public:
 
 	virtual void CreateVertexBuffer(gsl::span<Vertex> vertices) = 0;
 	virtual void CreateIndexBuffer(gsl::span<int> indices) = 0;
+	virtual void SetViewProjection(glm::mat4 view, glm::mat4 projection) = 0;
 	virtual void CreateTexture(unsigned char* pixels) = 0;
 	virtual void RenderIndexedBuffer(unsigned int shaderID) = 0;
 

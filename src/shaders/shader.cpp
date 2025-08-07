@@ -9,7 +9,7 @@ std::string GetCompileShaderCommand(const char* path) {
 	return std::format("glslc {} -o {}.spv", path, path);
 }
 
-// TODO: Refactor
+// TODO: Refactor to not have compilation independent of Graphics API initalization
 Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath) {
 
 #if OPENGL

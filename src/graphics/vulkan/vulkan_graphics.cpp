@@ -1054,6 +1054,11 @@ void VulkanGraphics::RenderIndexedBuffer(unsigned int shaderID) {
 	vkCmdDrawIndexed(command_buffer_, index_buffer_.element_count, 1, 0, 0, 0);
 }
 
+void VulkanGraphics::SetViewProjection(glm::mat4 view, glm::mat4 projection) {
+	UniformTransformations transformations{ view, projection };
+	std::memcpy(uniform_buffer_location_, &transformations, sizeof(UniformTransformations));
+}
+
 VkCommandBuffer VulkanGraphics::BeginTransientCommandBuffer() {
 	VkCommandBufferAllocateInfo allocation_info = {};
 	allocation_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
