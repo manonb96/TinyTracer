@@ -8,6 +8,7 @@ This project uses the following libraries:
 - [GLAD](https://glad.dav1d.de/)
 - [SPDLog](https://github.com/gabime/spdlog)
 - [GSL](https://github.com/microsoft/GSL)
+- [GLM](https://github.com/g-truc/glm)
 - [Vulkan](https://www.lunarg.com/vulkan-sdk/)
 
 ### Sources

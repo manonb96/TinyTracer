@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>lib\glad\include;lib\glfw-3.3.9.bin.WIN64\include;lib\spdlog\include;lib\gsl\include;C:\VulkanSDK\1.4.313.2\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>lib\glad\include;lib\glfw-3.3.9.bin.WIN64\include;lib\spdlog\include;lib\gsl\include;C:\VulkanSDK\1.4.313.2\Include;lib\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
