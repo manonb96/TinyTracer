@@ -1,5 +1,8 @@
 #version 450
+
+#ifdef VULKAN
 #include "common.glsl"
+#endif
 
 layout(location = 0) in vec2 vertex_uv;
 layout(location = 0) out vec4 out_color;
