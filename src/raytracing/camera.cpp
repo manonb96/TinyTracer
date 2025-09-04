@@ -22,10 +22,10 @@ Ray* Camera::GeneratePrimaryRay(int x, int y)
 {
 	float x_ndc = ((float)x + 0.5f) / WIDTH;
 	float y_ndc = ((float)y + 0.5f) / HEIGHT;
-
 	float x_screen = ((2.0f * x_ndc) - 1.0f) * aspectRatio;
-	float y_screen = 1.0f - (2.0f * y_ndc);
+	float y_screen = (2.0f * y_ndc) - 1.0f;
 
 	float3 n = normalize(forward + x_screen * right + y_screen * up);
+
 	return new Ray(position, n);
 }

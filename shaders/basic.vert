@@ -13,9 +13,9 @@ void main()
 {
 #ifdef VULKAN
 	gl_Position = camera.projection * camera.view * vec4(input_position, 1.0);
-	gl_Position.y *= -1;
 #else
 	gl_Position = vec4(input_position, 1.0);
+	gl_Position.y *= -1;
 #endif
 	vertex_uv = input_uv;
 }

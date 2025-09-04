@@ -8,7 +8,7 @@
 #pragma region Helpers
 
 void framebuffer_size_callback(GLFWwindow*, int width, int height) {
-	glViewport(0, 0, width * 2, height * 2);
+	glViewport(0, 0, width, height);
 }
 
 #pragma endregion
@@ -94,7 +94,7 @@ void OpenGLGraphics::Initialize() {
 
 	int width, height;
 	glfwGetFramebufferSize(window_->GetHandle(), &width, &height);
-	glViewport(0, 0, width * 2, height * 2); // TODO: Handle viewport size in more robust manner
+	glViewport(0, 0, width, height); // TODO: Handle viewport size in more robust manner
 	glfwSetFramebufferSizeCallback(window_->GetHandle(), framebuffer_size_callback);
 
 	// Bind vertex array object
