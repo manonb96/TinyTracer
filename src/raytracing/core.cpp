@@ -8,8 +8,8 @@
 
 void Core::InitializeScene() {
 	mainCamera = new Camera();
-    spheres.push_back(new Sphere(float3(-5.0f, 5.0f, 10.f), 2.f));
-    lights.push_back(new Light(float3(-3.f, 2.f, 8.f), float3(1.0f, 1.0f, 1.0f)));
+    spheres.push_back(new Sphere(float3(0.0f, 0.0f, 5.0f), 2.f));
+    lights.push_back(new Light(float3(0.0f, 0.0f, 2.f), float3(1.0f, 1.0f, 1.0f)));
     backgroundColor = float3(0, 0, 0);
 }
 
@@ -57,13 +57,13 @@ void Core::RenderScene(unsigned char* pixels) {
                         }
                     }
 
-                    if (!occluded) {
-                        float3 L = normalize(light->position - ip->point);
-                        float clampedCosTheta = std::max(dot(ip->normal, L), 0.f);
-                        float attenuation = 1.0f / (distanceToLight * distanceToLight);
-                        float3 diffuseColor = light->color * nearestObject->color * clampedCosTheta * attenuation;
-                        color += attenuation * nearestObject->color;
-                    }
+					if (!occluded) {
+						float3 L = normalize(light->position - ip->point);
+						float clampedCosTheta = std::max(dot(ip->normal, L), 0.f);
+						float attenuation = 1.0f / (distanceToLight * distanceToLight);
+						float3 diffuseColor = light->color * nearestObject->color * clampedCosTheta * attenuation;
+						color += attenuation * nearestObject->color;
+					}
                     delete shadowRay;
                 }
                 delete ip;
