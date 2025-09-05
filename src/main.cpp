@@ -2,10 +2,10 @@
 #include <GLFW/glfw3.h>
 #include <gtc/matrix_transform.hpp>
 
-#include "graphics/glfw/glfw_initialization.h"
-#include "graphics/glfw/glfw_window.h"
-#include "graphics/opengl/opengl_graphics.h"
-#include "graphics/vulkan/vulkan_graphics.h"
+#include "graphics/glfw/glfw_initialization.hpp"
+#include "graphics/glfw/glfw_window.hpp"
+#include "graphics/opengl/opengl_graphics.hpp"
+#include "graphics/vulkan/vulkan_graphics.hpp"
 
 #include "utils/constants.hpp"
 #include "raytracing/core.hpp"
@@ -49,8 +49,8 @@ int main() {
 	graphics.CreateIndexBuffer(indices);
 
 	// Set view projection
-	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = glm::mat4(1.0f);
+	mat4 view = mat4(1.0f);
+	mat4 projection = mat4(1.0f);
 	graphics.SetViewProjection(view, projection);
 
 	// Initialize ray tracing core
@@ -58,7 +58,7 @@ int main() {
 	core->InitializeScene();
 	
 	// Calculate pixel values and set up textures
-	unsigned char* pixels = new unsigned char[WIDTH * HEIGHT * 4];
+	uchar* pixels = new uchar[WIDTH * HEIGHT * 4];
 	core->RenderScene(pixels);
 	graphics.CreateTexture(pixels);
 

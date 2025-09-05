@@ -1,6 +1,6 @@
 #pragma once
 
 struct UniformTransformations {
-	glm::mat4 view;
-	glm::mat4 projection;
+	mat4 view;
+	mat4 projection;
 };

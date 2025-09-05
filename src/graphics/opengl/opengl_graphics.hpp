@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../graphics.h"
-#include "../glfw/glfw_window.h"
+#include "../graphics.hpp"
+#include "../glfw/glfw_window.hpp"
 
 class OpenGLGraphics final : public Graphics {
 public:
@@ -11,11 +11,11 @@ public:
 	bool BeginFrame() override;
 	void EndFrame() override;
 
-	void CreateVertexBuffer(gsl::span<Vertex> vertices) override;
-	void CreateIndexBuffer(gsl::span<int> indices) override;
-	void CreateTexture(unsigned char* pixels) override;
+	void CreateVertexBuffer(span<Vertex> vertices) override;
+	void CreateIndexBuffer(span<int> indices) override;
+	void CreateTexture(uchar* pixels) override;
 	void RenderIndexedBuffer() override;
-	void SetViewProjection(glm::mat4 view, glm::mat4 projection) override;
+	void SetViewProjection(mat4 view, mat4 projection) override;
 
 	// TODO: Add Destroy-methods
 private:
@@ -27,5 +27,5 @@ private:
 	unsigned int VBO_ = 0;
 	unsigned int EBO_ = 0;
 	unsigned int texture_ = 0;
-	unsigned char* pixels_;
+	uchar* pixels_;
 };

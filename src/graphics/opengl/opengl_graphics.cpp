@@ -1,4 +1,4 @@
-#include "opengl_graphics.h"
+#include "opengl_graphics.hpp"
 #include "../../utils/constants.hpp"
 
 #pragma region Helpers
@@ -12,11 +12,11 @@ void framebuffer_size_callback(GLFWwindow*, int width, int height) {
 #pragma region Graphics Pipeline
 void OpenGLGraphics::AttachShader()
 {
-	std::vector<std::uint8_t> vertexShaderBytes = shader_->GetVertexShaderBytes(true);
-	std::vector<std::uint8_t> fragmentShaderBytes = shader_->GetFragmentShaderBytes(true);
+	vector<uchar> vertexShaderBytes = shader_->GetVertexShaderBytes(true);
+	vector<uchar> fragmentShaderBytes = shader_->GetFragmentShaderBytes(true);
 
-	const char* vertexShaderData = reinterpret_cast<const char*>(vertexShaderBytes.data());
-	const char* fragmentShaderData = reinterpret_cast<const char*>(fragmentShaderBytes.data());
+	cstring vertexShaderData = reinterpret_cast<cstring>(vertexShaderBytes.data());
+	cstring fragmentShaderData = reinterpret_cast<cstring>(fragmentShaderBytes.data());
 
 	// Set up shader
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -83,7 +83,7 @@ void OpenGLGraphics::BindVertexArrayObject() {
 	glBindVertexArray(VAO_);
 }
 
-void OpenGLGraphics::CreateVertexBuffer(gsl::span<Vertex> vertices) {
+void OpenGLGraphics::CreateVertexBuffer(span<Vertex> vertices) {
 	glGenBuffers(1, &VBO_);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
@@ -94,7 +94,7 @@ void OpenGLGraphics::CreateVertexBuffer(gsl::span<Vertex> vertices) {
 	glEnableVertexAttribArray(1);
 }
 
-void OpenGLGraphics::CreateIndexBuffer(gsl::span<int> indices) {
+void OpenGLGraphics::CreateIndexBuffer(span<int> indices) {
 	glGenBuffers(1, &EBO_);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), indices.data(), GL_STATIC_DRAW);
@@ -106,13 +106,13 @@ void OpenGLGraphics::RenderIndexedBuffer() {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-void OpenGLGraphics::SetViewProjection(glm::mat4 view, glm::mat4 projection) { }
+void OpenGLGraphics::SetViewProjection(mat4 view, mat4 projection) { }
 
 #pragma endregion
 
 #pragma region Texture
 
-void OpenGLGraphics::CreateTexture(unsigned char* pixels)
+void OpenGLGraphics::CreateTexture(uchar* pixels)
 {
 	pixels_ = pixels;
 	glGenTextures(1, &texture_);
