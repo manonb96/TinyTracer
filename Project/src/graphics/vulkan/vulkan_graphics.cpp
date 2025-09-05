@@ -862,8 +862,11 @@ void VulkanGraphics::CreateSignals() {
 		std::exit(EXIT_FAILURE);
 	}
 
-	if (vkCreateSemaphore(logical_device_, &semaphore_info, nullptr, &render_finished_signal_) != VK_SUCCESS) {
-		std::exit(EXIT_FAILURE);
+	render_finished_signal_.resize(swap_chain_image_views_.size());
+	for (uint i = 0; i < swap_chain_image_views_.size(); i++) {
+		if (vkCreateSemaphore(logical_device_, &semaphore_info, nullptr, &render_finished_signal_[i]) != VK_SUCCESS) {
+			std::exit(EXIT_FAILURE);
+		}
 	}
 
 	VkFenceCreateInfo fence_info = {};
@@ -909,7 +912,7 @@ void VulkanGraphics::EndFrame() {
 	submit_info.pCommandBuffers = &command_buffer_;
 
 	submit_info.signalSemaphoreCount = 1;
-	submit_info.pSignalSemaphores = &render_finished_signal_;
+	submit_info.pSignalSemaphores = &render_finished_signal_[current_image_index_];
 
 	VkResult submit_result = vkQueueSubmit(graphics_queue_, 1, &submit_info, still_rendering_fence_);
 	if (submit_result != VK_SUCCESS) {
@@ -919,7 +922,7 @@ void VulkanGraphics::EndFrame() {
 	VkPresentInfoKHR present_info = {};
 	present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 	present_info.waitSemaphoreCount = 1;
-	present_info.pWaitSemaphores = &render_finished_signal_;
+	present_info.pWaitSemaphores = &render_finished_signal_[current_image_index_];
 	present_info.swapchainCount = 1;
 	present_info.pSwapchains = &swap_chain_;
 	present_info.pImageIndices = &current_image_index_;
@@ -931,10 +934,6 @@ void VulkanGraphics::EndFrame() {
 	else if (result != VK_SUCCESS) {
 		throw std::runtime_error("Failed to present swapchain image!");
 	}
-
-	// NOTE: This fixes the complaint about render_finished_signal still being in use
-	// BUT it does stall the whole pipeline so there might be a better solution
-	vkQueueWaitIdle(present_queue_);
 }
 #pragma endregion
 
@@ -1428,8 +1427,10 @@ VulkanGraphics::~VulkanGraphics() {
 			vkDestroySemaphore(logical_device_, image_available_signal_, nullptr);
 		}
 
-		if (render_finished_signal_ != VK_NULL_HANDLE) {
-			vkDestroySemaphore(logical_device_, render_finished_signal_, nullptr);
+		for (VkSemaphore semaphore : render_finished_signal_) {
+			if (semaphore != VK_NULL_HANDLE) {
+				vkDestroySemaphore(logical_device_, semaphore, nullptr);
+			}
 		}
 
 		if (image_available_signal_ != VK_NULL_HANDLE) {

@@ -134,7 +134,7 @@ private:
 	VkCommandBuffer command_buffer_ = VK_NULL_HANDLE;
 
 	VkSemaphore image_available_signal_ = VK_NULL_HANDLE;
-	VkSemaphore render_finished_signal_ = VK_NULL_HANDLE;
+	vector<VkSemaphore> render_finished_signal_;
 	VkFence still_rendering_fence_ = VK_NULL_HANDLE;
 
 	uint current_image_index_ = 0;
