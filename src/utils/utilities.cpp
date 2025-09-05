@@ -7,7 +7,7 @@ bool streq(gsl::czstring left, gsl::czstring right) {
 	return std::strcmp(left, right) == 0;
 }
 
-std::vector<std::uint8_t> ReadFile(std::filesystem::path file_path) {
+std::vector<std::uint8_t> ReadFile(std::filesystem::path file_path, bool addNullTerminator) {
 	if (!std::filesystem::exists(file_path)) {
 		spdlog::error("No file found at {}", file_path.string());
 		return {};
@@ -27,6 +27,12 @@ std::vector<std::uint8_t> ReadFile(std::filesystem::path file_path) {
 	const std::uint32_t size = std::filesystem::file_size(file_path);
 	std::vector<std::uint8_t> buffer(size);
 	file.read(reinterpret_cast<char*>(buffer.data()), size);
+
+	if (addNullTerminator)
+	{
+		buffer.push_back(0);
+	}
+
 	return buffer;
 }
 

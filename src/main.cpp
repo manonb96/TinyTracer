@@ -34,16 +34,14 @@ int main() {
 		1, 3, 2
 	};
 
-#if VULKAN
-	// Set up shaders
-	Shader shader("shaders/basic.vert", "shaders/basic.frag");
-#endif
+	// Initialize shaders
+	Shader shader("basic", "shaders/basic.vert", "shaders/basic.frag");
 
 	// Initialize Graphics API
 #if OPENGL
-	OpenGLGraphics graphics(&window);
+	OpenGLGraphics graphics(&window, &shader);
 #elif VULKAN
-	VulkanGraphics graphics(&window);
+	VulkanGraphics graphics(&window, &shader);
 #endif
 
 	graphics.Init();
@@ -58,11 +56,6 @@ int main() {
 	// Initialize ray tracing core
 	Core* core = new Core();
 	core->InitializeScene();
-
-#if OPENGL
-	// Set up shaders
-	Shader shader("shaders/basic.vert", "shaders/basic.frag");
-#endif
 	
 	// Calculate pixel values and set up textures
 	unsigned char* pixels = new unsigned char[WIDTH * HEIGHT * 4];
@@ -77,7 +70,7 @@ int main() {
 
 		if (graphics.BeginFrame()) {
 			// Render scene
-			graphics.RenderIndexedBuffer(shader.ID);
+			graphics.RenderIndexedBuffer();
 
 			// Wrap up
 			graphics.EndFrame();

@@ -1,8 +1,5 @@
 #define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <spdlog/spdlog.h>
 #include <set>
-#include "../../utils/precomp.h"
 #include "vulkan_graphics.h"
 
 #pragma region Vulkan functions extension implementations
@@ -542,13 +539,13 @@ VkShaderModule VulkanGraphics::CreateShaderModule(gsl::span<std::uint8_t> buffer
 }
 
 void VulkanGraphics::CreateGraphicsPipeline() {
-	std::vector<std::uint8_t> basic_vertex_data = ReadFile("./shaders/basic.vert.spv");
+	std::vector<std::uint8_t> basic_vertex_data = shader_->GetVertexShaderBytes();
 	VkShaderModule vertex_shader = CreateShaderModule(basic_vertex_data);
 	gsl::final_action _destroy_vertex([this, vertex_shader]() {
 		vkDestroyShaderModule(logical_device_, vertex_shader, nullptr);
 		});
 
-	std::vector<std::uint8_t> basic_fragment_data = ReadFile("./shaders/basic.frag.spv");
+	std::vector<std::uint8_t> basic_fragment_data = shader_->GetFragmentShaderBytes();
 	VkShaderModule fragment_shader = CreateShaderModule(basic_fragment_data);
 	gsl::final_action _destroy_fragment([this, fragment_shader]() {
 		vkDestroyShaderModule(logical_device_, fragment_shader, nullptr);
@@ -1045,7 +1042,7 @@ void VulkanGraphics::DestroyBuffer(BufferHandle handle) {
 	vkFreeMemory(logical_device_, handle.memory, nullptr);
 }
 
-void VulkanGraphics::RenderIndexedBuffer(unsigned int shaderID) {
+void VulkanGraphics::RenderIndexedBuffer() {
 	VkDeviceSize offset = 0;
 	vkCmdBindDescriptorSets(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &uniform_set_, 0, nullptr);
 	vkCmdBindDescriptorSets(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 1, 1, &texture_handle_.set, 0, nullptr);
@@ -1392,7 +1389,7 @@ TextureHandle VulkanGraphics::CreateImage(int2 size, VkFormat image_format, VkBu
 #pragma endregion
 
 #pragma region Class
-VulkanGraphics::VulkanGraphics(gsl::not_null<Window*> window) : Graphics(window) {
+VulkanGraphics::VulkanGraphics(gsl::not_null<Window*> window, Shader* shader) : Graphics(window, shader) {
 }
 
 VulkanGraphics::~VulkanGraphics() {

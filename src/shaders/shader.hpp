@@ -8,8 +8,13 @@
 
 class Shader {
 public:
-	unsigned int ID;
-	int pixelColorLocation;
-	Shader(const char* vertexPath, const char* fragmentPath);
-	void use();
+	Shader(const std::string name, std::string vertexShaderPath, std::string fragmentShaderPath);
+	~Shader();
+
+	std::vector<std::uint8_t> GetVertexShaderBytes(bool addNullTerminator = false);
+	std::vector<std::uint8_t> GetFragmentShaderBytes(bool addNullTerminato = false);
+private:
+	const std::string name_;
+	std::string vertexShaderPath_;
+	std::string fragmentShaderPath_;
 };
