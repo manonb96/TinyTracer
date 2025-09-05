@@ -17,7 +17,8 @@ int main() {
 	const GlfwInitialization glfw;
 
 	// Create window
-	Window window("GLFW Window", int2(WIDTH, HEIGHT));
+	cstring windowName = "GLFW Window | " GRAPHICS_API_STRING;
+	Window window(windowName, int2(WIDTH, HEIGHT));
 	window.TryMoveToPrimaryMonitor();
 
 	// Initialize buffers
