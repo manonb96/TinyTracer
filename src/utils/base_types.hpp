@@ -1,6 +1,21 @@
 #pragma once
+#include <glm.hpp>
+#include <string>
+#include <vector>
+#include <gsl/gsl>
 #include <math.h>
 #include <cmath>
+
+using uint = unsigned int; // std::uint32_t
+using uchar = unsigned char; // std::uint8_t
+using mat4 = glm::mat4;
+using string = std::string;
+using cstring = const char*; // gsl::czstring
+
+template<typename T>
+using span = gsl::span<T>;
+template<typename T>
+using vector = std::vector<T>;
 
 struct int2 {
 	int x, y;

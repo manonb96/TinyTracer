@@ -2,10 +2,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
-#include "glfw/glfw_window.h"
-#include "vertex.h"
-#include "uniform_transformations.h"
-#include "../utils/precomp.h"
+#include "glfw/glfw_window.hpp"
+#include "vertex.hpp"
+#include "uniform_transformations.hpp"
+#include "../utils/precomp.hpp"
 #include "../shaders/shader.hpp"
 
 class Graphics {
@@ -18,10 +18,10 @@ public:
 	virtual bool BeginFrame() = 0;
 	virtual void EndFrame() = 0;
 
-	virtual void CreateVertexBuffer(gsl::span<Vertex> vertices) = 0;
-	virtual void CreateIndexBuffer(gsl::span<int> indices) = 0;
-	virtual void SetViewProjection(glm::mat4 view, glm::mat4 projection) = 0;
-	virtual void CreateTexture(unsigned char* pixels) = 0;
+	virtual void CreateVertexBuffer(span<Vertex> vertices) = 0;
+	virtual void CreateIndexBuffer(span<int> indices) = 0;
+	virtual void SetViewProjection(mat4 view, mat4 projection) = 0;
+	virtual void CreateTexture(uchar* pixels) = 0;
 	virtual void RenderIndexedBuffer() = 0;
 
 protected:

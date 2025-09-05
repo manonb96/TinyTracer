@@ -1,11 +1,11 @@
 #pragma once
-#include "../../utils/precomp.h"
+#include "../../utils/precomp.hpp"
 
 struct GLFWwindow;
 
 class Window {
 public:
-	Window(const char* name, int2 size);
+	Window(cstring name, int2 size);
 	~Window();
 	int2 GetWindowSize() const;
 	int2 GetFrameBufferSize() const;

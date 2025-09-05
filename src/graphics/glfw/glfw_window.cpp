@@ -1,9 +1,9 @@
 #include <GLFW/glfw3.h>
-#include "glfw_window.h"
-#include "glfw_monitor.h"
+#include "glfw_window.hpp"
+#include "glfw_monitor.hpp"
 #include "../../utils/constants.hpp"
 
-Window::Window(const char* name, int2 size) {
+Window::Window(cstring name, int2 size) {
 
 #if OPENGL
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

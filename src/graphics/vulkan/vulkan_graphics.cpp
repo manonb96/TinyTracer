@@ -1,6 +1,6 @@
 #define GLFW_INCLUDE_VULKAN
 #include <set>
-#include "vulkan_graphics.h"
+#include "vulkan_graphics.hpp"
 
 #pragma region Vulkan functions extension implementations
 
@@ -60,28 +60,28 @@ void VulkanGraphics::SetupDebugMessenger() {
 	}
 }
 
-bool LayerMatchesName(gsl::czstring name, const VkLayerProperties& properties) {
+bool LayerMatchesName(cstring name, const VkLayerProperties& properties) {
 	return streq(properties.layerName, name);
 }
 
-bool IsLayerSupported(std::vector<VkLayerProperties> layers, gsl::czstring name) {
+bool IsLayerSupported(vector<VkLayerProperties> layers, cstring name) {
 	return std::any_of(layers.begin(), layers.end(), std::bind_front(LayerMatchesName, name));
 }
 
-bool VulkanGraphics::AreAllLayersSupported(gsl::span<gsl::czstring> layers) {
-	std::vector<VkLayerProperties> supported_layers = GetSupportedValidationLayers();
+bool VulkanGraphics::AreAllLayersSupported(span<cstring> layers) {
+	vector<VkLayerProperties> supported_layers = GetSupportedValidationLayers();
 	return std::all_of(layers.begin(), layers.end(), std::bind_front(IsLayerSupported, supported_layers));
 }
 
-std::vector<VkLayerProperties> VulkanGraphics::GetSupportedValidationLayers() {
-	std::uint32_t count;
+vector<VkLayerProperties> VulkanGraphics::GetSupportedValidationLayers() {
+	uint count;
 	vkEnumerateInstanceLayerProperties(&count, nullptr);
 
 	if (count == 0) {
 		return {};
 	}
 
-	std::vector<VkLayerProperties> properties(count);
+	vector<VkLayerProperties> properties(count);
 	vkEnumerateInstanceLayerProperties(&count, properties.data());
 	return properties;
 }
@@ -91,12 +91,12 @@ std::vector<VkLayerProperties> VulkanGraphics::GetSupportedValidationLayers() {
 #pragma region Instance and extensions
 
 void VulkanGraphics::CreateInstance() {
-	std::array<gsl::czstring, 1> validation_layers = { "VK_LAYER_KHRONOS_validation" };
+	std::array<cstring, 1> validation_layers = { "VK_LAYER_KHRONOS_validation" };
 	if (!AreAllLayersSupported(validation_layers)) {
 		validation_enabled_ = false;
 	}
 
-	std::vector<gsl::czstring> required_extensions = GetRequiredInstanceExtensions();
+	vector<cstring> required_extensions = GetRequiredInstanceExtensions();
 
 	VkApplicationInfo app_info = {};
 	app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -132,17 +132,17 @@ void VulkanGraphics::CreateInstance() {
 	}
 }
 
-gsl::span<gsl::czstring> VulkanGraphics::GetSuggestedInstanceExtensions() {
-	std::uint32_t glfw_extension_count = 0;
-	gsl::czstring* glfw_extensions;
+span<cstring> VulkanGraphics::GetSuggestedInstanceExtensions() {
+	uint glfw_extension_count = 0;
+	cstring* glfw_extensions;
 
 	glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
 	return { glfw_extensions, glfw_extension_count };
 }
 
-std::vector<gsl::czstring> VulkanGraphics::GetRequiredInstanceExtensions() {
-	gsl::span<gsl::czstring> suggested_extensions = GetSuggestedInstanceExtensions();
-	std::vector<gsl::czstring> required_extensions(suggested_extensions.size());
+vector<cstring> VulkanGraphics::GetRequiredInstanceExtensions() {
+	span<cstring> suggested_extensions = GetSuggestedInstanceExtensions();
+	vector<cstring> required_extensions(suggested_extensions.size());
 	std::copy(suggested_extensions.begin(), suggested_extensions.end(), required_extensions.begin());
 
 	if (validation_enabled_) {
@@ -156,29 +156,29 @@ std::vector<gsl::czstring> VulkanGraphics::GetRequiredInstanceExtensions() {
 	return required_extensions;
 }
 
-std::vector<VkExtensionProperties> VulkanGraphics::GetSupportedInstanceExtensions() {
-	std::uint32_t count;
+vector<VkExtensionProperties> VulkanGraphics::GetSupportedInstanceExtensions() {
+	uint count;
 	vkEnumerateInstanceExtensionProperties(nullptr, &count, nullptr);
 
 	if (count == 0) {
 		return {};
 	}
 
-	std::vector<VkExtensionProperties> properties(count);
+	vector<VkExtensionProperties> properties(count);
 	vkEnumerateInstanceExtensionProperties(nullptr, &count, properties.data());
 	return properties;
 }
 
-bool ExtensionMatchesName(gsl::czstring name, const VkExtensionProperties& properties) {
+bool ExtensionMatchesName(cstring name, const VkExtensionProperties& properties) {
 	return streq(properties.extensionName, name);
 }
 
-bool IsExtensionSupported(std::vector<VkExtensionProperties> supportedextensions, gsl::czstring name) {
+bool IsExtensionSupported(vector<VkExtensionProperties> supportedextensions, cstring name) {
 	return std::any_of(supportedextensions.begin(), supportedextensions.end(), std::bind_front(ExtensionMatchesName, name));
 }
 
-bool VulkanGraphics::AreAllExtensionsSupported(gsl::span<gsl::czstring> extensions) {
-	std::vector<VkExtensionProperties> supported_extensions = GetSupportedInstanceExtensions();
+bool VulkanGraphics::AreAllExtensionsSupported(span<cstring> extensions) {
+	vector<VkExtensionProperties> supported_extensions = GetSupportedInstanceExtensions();
 	return std::all_of(extensions.begin(), extensions.end(), std::bind_front(IsExtensionSupported, supported_extensions));
 }
 
@@ -186,9 +186,9 @@ bool VulkanGraphics::AreAllExtensionsSupported(gsl::span<gsl::czstring> extensio
 
 #pragma region Devices and queues
 VulkanGraphics::QueueFamilyIndices VulkanGraphics::FindQueueFamilies(VkPhysicalDevice device) {
-	std::uint32_t queue_family_count = 0;
+	uint queue_family_count = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, nullptr);
-	std::vector<VkQueueFamilyProperties> families(queue_family_count);
+	vector<VkQueueFamilyProperties> families(queue_family_count);
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &queue_family_count, families.data());
 
 	auto graphics_family_it = std::find_if(families.begin(), families.end(), [](const VkQueueFamilyProperties& props) {
@@ -198,7 +198,7 @@ VulkanGraphics::QueueFamilyIndices VulkanGraphics::FindQueueFamilies(VkPhysicalD
 	QueueFamilyIndices result;
 	result.graphics_family = graphics_family_it - families.begin();
 
-	for (std::uint32_t i = 0; i < families.size(); i++) {
+	for (uint i = 0; i < families.size(); i++) {
 		VkBool32 has_presentation_support = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &has_presentation_support);
 		if (has_presentation_support) {
@@ -214,12 +214,12 @@ VulkanGraphics::SwapChainProperties VulkanGraphics::GetSwapChainProperties(VkPhy
 	SwapChainProperties properties;
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface_, &properties.capabilities);
 
-	std::uint32_t format_count;
+	uint format_count;
 	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &format_count, nullptr);
 	properties.formats.resize(format_count);
 	vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface_, &format_count, properties.formats.data());
 
-	std::uint32_t modes_count;
+	uint modes_count;
 	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &modes_count, nullptr);
 	properties.present_modes.resize(modes_count);
 	vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface_, &modes_count, properties.present_modes.data());
@@ -227,17 +227,17 @@ VulkanGraphics::SwapChainProperties VulkanGraphics::GetSwapChainProperties(VkPhy
 	return properties;
 }
 
-std::vector<VkExtensionProperties> VulkanGraphics::GetDeviceAvailableExtensions(VkPhysicalDevice device) {
-	std::uint32_t available_extensions_count;
+vector<VkExtensionProperties> VulkanGraphics::GetDeviceAvailableExtensions(VkPhysicalDevice device) {
+	uint available_extensions_count;
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, nullptr);
-	std::vector<VkExtensionProperties> available_extensions(available_extensions_count);
+	vector<VkExtensionProperties> available_extensions(available_extensions_count);
 	vkEnumerateDeviceExtensionProperties(device, nullptr, &available_extensions_count, available_extensions.data());
 
 	return available_extensions;
 }
 
 bool VulkanGraphics::AreAllDeviceExtensionsSupported(VkPhysicalDevice device) {
-	std::vector<VkExtensionProperties> available_extensions = GetDeviceAvailableExtensions(device);
+	vector<VkExtensionProperties> available_extensions = GetDeviceAvailableExtensions(device);
 	return std::all_of(required_device_extensions_.begin(), required_device_extensions_.end(), std::bind_front(IsExtensionSupported, available_extensions));
 }
 
@@ -248,7 +248,7 @@ bool VulkanGraphics::IsDeviceSuitable(VkPhysicalDevice device) {
 }
 
 void VulkanGraphics::PickPhysicalDevice() {
-	std::vector<VkPhysicalDevice> devices = GetAvailableDevices();
+	vector<VkPhysicalDevice> devices = GetAvailableDevices();
 	std::erase_if(devices, std::not_fn(std::bind_front(&VulkanGraphics::IsDeviceSuitable, this)));
 
 	if (devices.empty()) {
@@ -264,15 +264,15 @@ void VulkanGraphics::PickPhysicalDevice() {
 	physical_device_ = devices[0];
 }
 
-std::vector<VkPhysicalDevice> VulkanGraphics::GetAvailableDevices() {
-	std::uint32_t device_count;
+vector<VkPhysicalDevice> VulkanGraphics::GetAvailableDevices() {
+	uint device_count;
 	vkEnumeratePhysicalDevices(instance_, &device_count, nullptr);
 
 	if (device_count == 0) {
 		return {};
 	}
 
-	std::vector<VkPhysicalDevice> devices(device_count);
+	vector<VkPhysicalDevice> devices(device_count);
 	vkEnumeratePhysicalDevices(instance_, &device_count, devices.data());
 
 	return devices;
@@ -287,12 +287,12 @@ void VulkanGraphics::CreateLogicalDeviceAndQueues() {
 	}
 
 	// If graphics family and presentation family at the same, the set will only have one value
-	std::set<std::uint32_t> unique_queue_families = { picked_device_families.graphics_family.value(), picked_device_families.presentation_family.value() };
+	std::set<uint> unique_queue_families = { picked_device_families.graphics_family.value(), picked_device_families.presentation_family.value() };
 
-	std::float_t queue_priority = 1.0f;
+	float queue_priority = 1.0f;
 
-	std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
-	for (std::uint32_t unique_queue_family : unique_queue_families) {
+	vector<VkDeviceQueueCreateInfo> queue_create_infos;
+	for (uint unique_queue_family : unique_queue_families) {
 		VkDeviceQueueCreateInfo queue_info = {};
 		queue_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 		queue_info.queueFamilyIndex = unique_queue_family;
@@ -346,7 +346,7 @@ bool IsCorrectFormat(const VkSurfaceFormatKHR& format_properties) {
 	return IsRgbaTypeFormat(format_properties) && IsSrgbColorSpace(format_properties);
 }
 
-VkSurfaceFormatKHR VulkanGraphics::ChooseSwapSurfaceFormat(gsl::span<VkSurfaceFormatKHR> formats) {
+VkSurfaceFormatKHR VulkanGraphics::ChooseSwapSurfaceFormat(span<VkSurfaceFormatKHR> formats) {
 	if (formats.size() == 1 && formats[0].format == VK_FORMAT_UNDEFINED) {
 		return { VK_FORMAT_R8G8B8A8_SRGB, VK_COLORSPACE_SRGB_NONLINEAR_KHR };
 	}
@@ -364,7 +364,7 @@ bool IsMailboxPresentMode(const VkPresentModeKHR& mode) {
 	return mode == VK_PRESENT_MODE_MAILBOX_KHR;
 }
 
-VkPresentModeKHR VulkanGraphics::ChooseSwapPresentMode(gsl::span<VkPresentModeKHR> modes) {
+VkPresentModeKHR VulkanGraphics::ChooseSwapPresentMode(span<VkPresentModeKHR> modes) {
 	if (std::any_of(modes.begin(), modes.end(), IsMailboxPresentMode)) {
 		return VK_PRESENT_MODE_MAILBOX_KHR;
 	}
@@ -373,15 +373,15 @@ VkPresentModeKHR VulkanGraphics::ChooseSwapPresentMode(gsl::span<VkPresentModeKH
 }
 
 VkExtent2D VulkanGraphics::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
-	constexpr std::uint32_t kInvalidSize = std::numeric_limits<std::uint32_t>::max();
+	constexpr uint kInvalidSize = std::numeric_limits<uint>::max();
 	if (capabilities.currentExtent.width != kInvalidSize) {
 		return capabilities.currentExtent;
 	}
 	else {
 		int2 size = window_->GetFrameBufferSize();
 		VkExtent2D actual_extent = {
-			static_cast<std::uint32_t>(size.x),
-			static_cast<std::uint32_t>(size.y),
+			static_cast<uint>(size.x),
+			static_cast<uint>(size.y),
 		};
 		actual_extent.width = std::clamp(actual_extent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
 		actual_extent.height = std::clamp(actual_extent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
@@ -389,8 +389,8 @@ VkExtent2D VulkanGraphics::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capa
 	}
 }
 
-std::uint32_t VulkanGraphics::ChooseSwapImageCount(const VkSurfaceCapabilitiesKHR& capabilities) {
-	std::uint32_t image_count = capabilities.minImageCount + 1;
+uint VulkanGraphics::ChooseSwapImageCount(const VkSurfaceCapabilitiesKHR& capabilities) {
+	uint image_count = capabilities.minImageCount + 1;
 	if (capabilities.maxImageCount > 0 && capabilities.maxImageCount < image_count) {
 		image_count = capabilities.maxImageCount;
 	}
@@ -403,7 +403,7 @@ void VulkanGraphics::CreateSwapChain() {
 	surface_format_ = ChooseSwapSurfaceFormat(properties.formats);
 	present_mode_ = ChooseSwapPresentMode(properties.present_modes);
 	extent_ = ChooseSwapExtent(properties.capabilities);
-	std::uint32_t image_count = ChooseSwapImageCount(properties.capabilities);
+	uint image_count = ChooseSwapImageCount(properties.capabilities);
 
 	VkSwapchainCreateInfoKHR info = {};
 	info.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR; 
@@ -423,7 +423,7 @@ void VulkanGraphics::CreateSwapChain() {
 	QueueFamilyIndices indices = FindQueueFamilies(physical_device_);
 
 	if (indices.graphics_family != indices.presentation_family) {
-		std::array<std::uint32_t, 2> family_indices = { indices.graphics_family.value(), indices.presentation_family.value() };
+		std::array<uint, 2> family_indices = { indices.graphics_family.value(), indices.presentation_family.value() };
 		info.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 		info.queueFamilyIndexCount = family_indices.size();
 		info.pQueueFamilyIndices = family_indices.data();
@@ -437,7 +437,7 @@ void VulkanGraphics::CreateSwapChain() {
 		std::exit(EXIT_FAILURE);
 	}
 
-	std::uint32_t actual_image_count;
+	uint actual_image_count;
 	vkGetSwapchainImagesKHR(logical_device_, swap_chain_, &actual_image_count, nullptr);
 	swap_chain_images_.resize(actual_image_count);
 	vkGetSwapchainImagesKHR(logical_device_, swap_chain_, &actual_image_count, swap_chain_images_.data());
@@ -518,7 +518,7 @@ void VulkanGraphics::CreateImageViews() {
 
 #pragma region Graphics Pipeline
 
-VkShaderModule VulkanGraphics::CreateShaderModule(gsl::span<std::uint8_t> buffer) {
+VkShaderModule VulkanGraphics::CreateShaderModule(span<uchar> buffer) {
 	if (buffer.empty()) {
 		spdlog::error("[Vulkan Error] Could not create shader module. Found empty buffer.");
 		return VK_NULL_HANDLE;
@@ -527,7 +527,7 @@ VkShaderModule VulkanGraphics::CreateShaderModule(gsl::span<std::uint8_t> buffer
 	VkShaderModuleCreateInfo info = {};
 	info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 	info.codeSize = buffer.size();
-	info.pCode = reinterpret_cast<std::uint32_t*>(buffer.data());
+	info.pCode = reinterpret_cast<uint*>(buffer.data());
 
 	VkShaderModule shader_module;
 	VkResult result = vkCreateShaderModule(logical_device_, &info, nullptr, &shader_module);
@@ -539,13 +539,13 @@ VkShaderModule VulkanGraphics::CreateShaderModule(gsl::span<std::uint8_t> buffer
 }
 
 void VulkanGraphics::CreateGraphicsPipeline() {
-	std::vector<std::uint8_t> basic_vertex_data = shader_->GetVertexShaderBytes();
+	vector<uchar> basic_vertex_data = shader_->GetVertexShaderBytes();
 	VkShaderModule vertex_shader = CreateShaderModule(basic_vertex_data);
 	gsl::final_action _destroy_vertex([this, vertex_shader]() {
 		vkDestroyShaderModule(logical_device_, vertex_shader, nullptr);
 		});
 
-	std::vector<std::uint8_t> basic_fragment_data = shader_->GetFragmentShaderBytes();
+	vector<uchar> basic_fragment_data = shader_->GetFragmentShaderBytes();
 	VkShaderModule fragment_shader = CreateShaderModule(basic_fragment_data);
 	gsl::final_action _destroy_fragment([this, fragment_shader]() {
 		vkDestroyShaderModule(logical_device_, fragment_shader, nullptr);
@@ -690,8 +690,8 @@ VkViewport VulkanGraphics::GetViewport() {
 	VkViewport viewport = {};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = static_cast<std::float_t>(extent_.width);
-	viewport.height = static_cast<std::float_t>(extent_.height);
+	viewport.width = static_cast<float>(extent_.width);
+	viewport.height = static_cast<float>(extent_.height);
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
@@ -768,7 +768,7 @@ void VulkanGraphics::CreateRenderPass() {
 
 void VulkanGraphics::CreateFramebuffers() {
 	swap_chain_framebuffers_.resize(swap_chain_image_views_.size());
-	for (std::uint32_t i = 0; i < swap_chain_image_views_.size(); i++) {
+	for (uint i = 0; i < swap_chain_image_views_.size(); i++) {
 		std::array<VkImageView, 1> attachments = { swap_chain_image_views_[i] };
 
 		VkFramebufferCreateInfo info = {};
@@ -940,12 +940,12 @@ void VulkanGraphics::EndFrame() {
 
 #pragma region Buffers
 
-std::uint32_t VulkanGraphics::FindMemoryType(std::uint32_t type_bits_filter, VkMemoryPropertyFlags required_properties) {
+uint VulkanGraphics::FindMemoryType(uint type_bits_filter, VkMemoryPropertyFlags required_properties) {
 	VkPhysicalDeviceMemoryProperties memory_properties;
 	vkGetPhysicalDeviceMemoryProperties(physical_device_, &memory_properties);
-	gsl::span<VkMemoryType> memory_types(memory_properties.memoryTypes, memory_properties.memoryTypeCount);
+	span<VkMemoryType> memory_types(memory_properties.memoryTypes, memory_properties.memoryTypeCount);
 
-	for (std::uint32_t i = 0; i < memory_types.size(); i++) {
+	for (uint i = 0; i < memory_types.size(); i++) {
 		bool passes_filter = type_bits_filter & (1 << i);
 		bool has_property_flags = memory_types[i].propertyFlags & required_properties;
 		if (passes_filter && has_property_flags) {
@@ -956,7 +956,7 @@ std::uint32_t VulkanGraphics::FindMemoryType(std::uint32_t type_bits_filter, VkM
 	throw std::runtime_error("Cannot find memory type!");
 }
 
-BufferHandle VulkanGraphics::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, std::uint32_t element_count) {
+BufferHandle VulkanGraphics::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, uint element_count) {
 	BufferHandle handle = {};
 	handle.element_count = element_count;
 
@@ -974,7 +974,7 @@ BufferHandle VulkanGraphics::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags 
 	VkMemoryRequirements memory_requirements;
 	vkGetBufferMemoryRequirements(logical_device_, handle.buffer, &memory_requirements);
 
-	std::uint32_t chosen_memory_type = FindMemoryType(memory_requirements.memoryTypeBits, properties);
+	uint chosen_memory_type = FindMemoryType(memory_requirements.memoryTypeBits, properties);
 
 	VkMemoryAllocateInfo allocation_info = {};
 	allocation_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -990,7 +990,7 @@ BufferHandle VulkanGraphics::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags 
 	return handle;
 }
 
-void VulkanGraphics::CreateVertexBuffer(gsl::span<Vertex> vertices) {
+void VulkanGraphics::CreateVertexBuffer(span<Vertex> vertices) {
 	VkDeviceSize size = sizeof(Vertex) * vertices.size();
 	BufferHandle staging_handle = CreateBuffer(size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, vertices.size());
 
@@ -1013,8 +1013,8 @@ void VulkanGraphics::CreateVertexBuffer(gsl::span<Vertex> vertices) {
 	DestroyBuffer(staging_handle);
 }
 
-void VulkanGraphics::CreateIndexBuffer(gsl::span<int> indices) {
-	VkDeviceSize size = sizeof(std::uint32_t) * indices.size();
+void VulkanGraphics::CreateIndexBuffer(span<int> indices) {
+	VkDeviceSize size = sizeof(uint) * indices.size();
 	BufferHandle staging_handle = CreateBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, indices.size());
 
 	void* data;
@@ -1051,7 +1051,7 @@ void VulkanGraphics::RenderIndexedBuffer() {
 	vkCmdDrawIndexed(command_buffer_, index_buffer_.element_count, 1, 0, 0, 0);
 }
 
-void VulkanGraphics::SetViewProjection(glm::mat4 view, glm::mat4 projection) {
+void VulkanGraphics::SetViewProjection(mat4 view, mat4 projection) {
 	UniformTransformations transformations{ view, projection };
 	std::memcpy(uniform_buffer_location_, &transformations, sizeof(UniformTransformations));
 }
@@ -1216,7 +1216,7 @@ void VulkanGraphics::CreateTextureSampler() {
 	}
 }
 
-void VulkanGraphics::CreateTexture(unsigned char* pixels) {
+void VulkanGraphics::CreateTexture(uchar* pixels) {
 	int2 image_extents = int2(WIDTH, HEIGHT);
 	int channels = 4;
 	
@@ -1335,7 +1335,7 @@ void VulkanGraphics::CopyBufferToImage(VkBuffer buffer, VkImage image, int2 imag
 	region.imageSubresource.baseArrayLayer = 0;
 	region.imageSubresource.layerCount = 1;
 	region.imageOffset = { 0, 0, 0 };
-	region.imageExtent = { static_cast<std::uint32_t>(image_size.x), static_cast<std::uint32_t>(image_size.y), 1 };
+	region.imageExtent = { static_cast<uint>(image_size.x), static_cast<uint>(image_size.y), 1 };
 
 	vkCmdCopyBufferToImage(local_command_buffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
@@ -1369,7 +1369,7 @@ TextureHandle VulkanGraphics::CreateImage(int2 size, VkFormat image_format, VkBu
 	VkMemoryRequirements memory_requirements;
 	vkGetImageMemoryRequirements(logical_device_, handle.image, &memory_requirements);
 
-	std::uint32_t chosen_memory_type = FindMemoryType(memory_requirements.memoryTypeBits, properties);
+	uint chosen_memory_type = FindMemoryType(memory_requirements.memoryTypeBits, properties);
 
 	VkMemoryAllocateInfo allocation_info = {};
 	allocation_info.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;

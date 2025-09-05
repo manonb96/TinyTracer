@@ -135,16 +135,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\graphics\glfw\glfw_initialization.h" />
-    <ClInclude Include="src\graphics\glfw\glfw_monitor.h" />
-    <ClInclude Include="src\graphics\glfw\glfw_window.h" />
-    <ClInclude Include="src\graphics\graphics.h" />
-    <ClInclude Include="src\graphics\opengl\opengl_graphics.h" />
-    <ClInclude Include="src\graphics\uniform_transformations.h" />
-    <ClInclude Include="src\graphics\vertex.h" />
-    <ClInclude Include="src\graphics\vulkan\buffer_handle.h" />
-    <ClInclude Include="src\graphics\vulkan\texture_handle.h" />
-    <ClInclude Include="src\graphics\vulkan\vulkan_graphics.h" />
+    <ClInclude Include="src\graphics\glfw\glfw_initialization.hpp" />
+    <ClInclude Include="src\graphics\glfw\glfw_monitor.hpp" />
+    <ClInclude Include="src\graphics\glfw\glfw_window.hpp" />
+    <ClInclude Include="src\graphics\graphics.hpp" />
+    <ClInclude Include="src\graphics\opengl\opengl_graphics.hpp" />
+    <ClInclude Include="src\graphics\uniform_transformations.hpp" />
+    <ClInclude Include="src\graphics\vertex.hpp" />
+    <ClInclude Include="src\graphics\vulkan\buffer_handle.hpp" />
+    <ClInclude Include="src\graphics\vulkan\texture_handle.hpp" />
+    <ClInclude Include="src\graphics\vulkan\vulkan_graphics.hpp" />
     <ClInclude Include="src\utils\base_types.hpp" />
     <ClInclude Include="src\raytracing\camera.hpp" />
     <ClInclude Include="src\utils\constants.hpp" />
@@ -154,8 +154,8 @@
     <ClInclude Include="src\raytracing\lights.hpp" />
     <ClInclude Include="src\raytracing\raytracer.hpp" />
     <ClInclude Include="src\shaders\shader.hpp" />
-    <ClInclude Include="src\utils\precomp.h" />
-    <ClInclude Include="src\utils\utilities.h" />
+    <ClInclude Include="src\utils\precomp.hpp" />
+    <ClInclude Include="src\utils\utilities.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lib\glad\src\glad.c" />

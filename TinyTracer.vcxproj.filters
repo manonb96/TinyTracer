@@ -42,40 +42,40 @@
     <ClInclude Include="src\raytracing\intersectionpoint.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\glfw\glfw_initialization.h">
+    <ClInclude Include="src\graphics\glfw\glfw_initialization.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\precomp.h">
+    <ClInclude Include="src\utils\precomp.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\opengl\opengl_graphics.h">
+    <ClInclude Include="src\graphics\opengl\opengl_graphics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\glfw\glfw_window.h">
+    <ClInclude Include="src\graphics\glfw\glfw_window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\glfw\glfw_monitor.h">
+    <ClInclude Include="src\graphics\glfw\glfw_monitor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\graphics.h">
+    <ClInclude Include="src\graphics\graphics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\vertex.h">
+    <ClInclude Include="src\graphics\vertex.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\vulkan\vulkan_graphics.h">
+    <ClInclude Include="src\graphics\vulkan\vulkan_graphics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\utilities.h">
+    <ClInclude Include="src\utils\utilities.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\vulkan\buffer_handle.h">
+    <ClInclude Include="src\graphics\vulkan\buffer_handle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\vulkan\texture_handle.h">
+    <ClInclude Include="src\graphics\vulkan\texture_handle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\uniform_transformations.h">
+    <ClInclude Include="src\graphics\uniform_transformations.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

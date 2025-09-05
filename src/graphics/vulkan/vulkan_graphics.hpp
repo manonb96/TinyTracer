@@ -1,9 +1,9 @@
 #pragma once
 #include <vulkan/vulkan.h>
-#include "../graphics.h"
-#include "../glfw/glfw_window.h"
-#include "buffer_handle.h"
-#include "texture_handle.h"
+#include "../graphics.hpp"
+#include "../glfw/glfw_window.hpp"
+#include "buffer_handle.hpp"
+#include "texture_handle.hpp"
 
 class VulkanGraphics final : public Graphics {
 public:
@@ -13,24 +13,24 @@ public:
 	bool BeginFrame() override;
 	void EndFrame() override;
 
-	void CreateVertexBuffer(gsl::span<Vertex> vertices) override;
-	void CreateIndexBuffer(gsl::span<int> indices) override;
-	void CreateTexture(unsigned char* pixels) override;
+	void CreateVertexBuffer(span<Vertex> vertices) override;
+	void CreateIndexBuffer(span<int> indices) override;
+	void CreateTexture(uchar* pixels) override;
 	void RenderIndexedBuffer() override;
-	void SetViewProjection(glm::mat4 view, glm::mat4 projection) override;
+	void SetViewProjection(mat4 view, mat4 projection) override;
 
 private:
 	struct QueueFamilyIndices {
-		std::optional<std::uint32_t> graphics_family = std::nullopt;
-		std::optional<std::uint32_t> presentation_family = std::nullopt;
+		std::optional<uint> graphics_family = std::nullopt;
+		std::optional<uint> presentation_family = std::nullopt;
 
 		bool IsValid() const { return graphics_family.has_value() && presentation_family.has_value(); }
 	};
 
 	struct SwapChainProperties {
 		VkSurfaceCapabilitiesKHR capabilities;
-		std::vector<VkSurfaceFormatKHR> formats;
-		std::vector<VkPresentModeKHR> present_modes;
+		vector<VkSurfaceFormatKHR> formats;
+		vector<VkPresentModeKHR> present_modes;
 
 		bool IsValid() const { return !formats.empty() && !present_modes.empty(); }
 	};
@@ -66,33 +66,33 @@ private:
 	void EndCommands();
 
 	// Static utils
-	static gsl::span<gsl::czstring> GetSuggestedInstanceExtensions();
-	static std::vector<VkExtensionProperties> GetSupportedInstanceExtensions();
-	static bool AreAllExtensionsSupported(gsl::span<gsl::czstring> extensions);
+	static span<cstring> GetSuggestedInstanceExtensions();
+	static vector<VkExtensionProperties> GetSupportedInstanceExtensions();
+	static bool AreAllExtensionsSupported(span<cstring> extensions);
 	
-	static std::vector<VkLayerProperties> GetSupportedValidationLayers();
-	static bool AreAllLayersSupported(gsl::span<gsl::czstring> extensions);
+	static vector<VkLayerProperties> GetSupportedValidationLayers();
+	static bool AreAllLayersSupported(span<cstring> extensions);
 
 	// Private methods
-	std::vector<gsl::czstring> GetRequiredInstanceExtensions();
+	vector<cstring> GetRequiredInstanceExtensions();
 
 	QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 	SwapChainProperties GetSwapChainProperties(VkPhysicalDevice device);
 
 	bool IsDeviceSuitable(VkPhysicalDevice device);
-	std::vector<VkPhysicalDevice> GetAvailableDevices();
+	vector<VkPhysicalDevice> GetAvailableDevices();
 	bool AreAllDeviceExtensionsSupported(VkPhysicalDevice device);
-	std::vector<VkExtensionProperties> GetDeviceAvailableExtensions(VkPhysicalDevice device);
+	vector<VkExtensionProperties> GetDeviceAvailableExtensions(VkPhysicalDevice device);
 
-	VkSurfaceFormatKHR ChooseSwapSurfaceFormat(gsl::span<VkSurfaceFormatKHR> formats);
-	VkPresentModeKHR ChooseSwapPresentMode(gsl::span<VkPresentModeKHR> modes);
+	VkSurfaceFormatKHR ChooseSwapSurfaceFormat(span<VkSurfaceFormatKHR> formats);
+	VkPresentModeKHR ChooseSwapPresentMode(span<VkPresentModeKHR> modes);
 	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-	std::uint32_t ChooseSwapImageCount(const VkSurfaceCapabilitiesKHR& capabilities);
+	uint ChooseSwapImageCount(const VkSurfaceCapabilitiesKHR& capabilities);
 
-	VkShaderModule CreateShaderModule(gsl::span<std::uint8_t> buffer);
-	std::uint32_t FindMemoryType(std::uint32_t type_bits_filter, VkMemoryPropertyFlags required_properties);
+	VkShaderModule CreateShaderModule(span<uchar> buffer);
+	uint FindMemoryType(uint type_bits_filter, VkMemoryPropertyFlags required_properties);
 
-	BufferHandle CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, std::uint32_t element_count);
+	BufferHandle CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, uint element_count);
 	VkCommandBuffer BeginTransientCommandBuffer();
 	void EndTransientCommandBuffer(VkCommandBuffer command_buffer);
 
@@ -111,7 +111,7 @@ private:
 	BufferHandle index_buffer_ = {};
 	TextureHandle texture_handle_ = {};
 
-	std::array<gsl::czstring, 1> required_device_extensions_ = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	std::array<cstring, 1> required_device_extensions_ = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 	VkPhysicalDevice physical_device_ = VK_NULL_HANDLE;
 	VkDevice logical_device_ = VK_NULL_HANDLE;
 	VkQueue graphics_queue_ = VK_NULL_HANDLE;
@@ -122,9 +122,9 @@ private:
 	VkSurfaceFormatKHR surface_format_;
 	VkPresentModeKHR present_mode_;
 	VkExtent2D extent_;
-	std::vector<VkImage> swap_chain_images_;
-	std::vector<VkImageView> swap_chain_image_views_;
-	std::vector<VkFramebuffer> swap_chain_framebuffers_;
+	vector<VkImage> swap_chain_images_;
+	vector<VkImageView> swap_chain_image_views_;
+	vector<VkFramebuffer> swap_chain_framebuffers_;
 
 	VkPipelineLayout pipeline_layout_ = VK_NULL_HANDLE;
 	VkRenderPass render_pass_ = VK_NULL_HANDLE;
@@ -137,7 +137,7 @@ private:
 	VkSemaphore render_finished_signal_ = VK_NULL_HANDLE;
 	VkFence still_rendering_fence_ = VK_NULL_HANDLE;
 
-	std::uint32_t current_image_index_ = 0;
+	uint current_image_index_ = 0;
 
 	VkDescriptorSetLayout uniform_set_layout_ = VK_NULL_HANDLE;
 	VkDescriptorPool uniform_pool_ = VK_NULL_HANDLE;

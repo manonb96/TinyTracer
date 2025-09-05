@@ -1,13 +1,13 @@
-#include "precomp.h"
-#include "utilities.h"
+#include "precomp.hpp"
+#include "utilities.hpp"
 #include <fstream>
 #include <spdlog/spdlog.h>
 
-bool streq(gsl::czstring left, gsl::czstring right) {
+bool streq(cstring left, cstring right) {
 	return std::strcmp(left, right) == 0;
 }
 
-std::vector<std::uint8_t> ReadFile(std::filesystem::path file_path, bool addNullTerminator) {
+vector<uchar> ReadFile(std::filesystem::path file_path, bool addNullTerminator) {
 	if (!std::filesystem::exists(file_path)) {
 		spdlog::error("No file found at {}", file_path.string());
 		return {};
@@ -24,8 +24,8 @@ std::vector<std::uint8_t> ReadFile(std::filesystem::path file_path, bool addNull
 		return {};
 	}
 
-	const std::uint32_t size = std::filesystem::file_size(file_path);
-	std::vector<std::uint8_t> buffer(size);
+	const uint size = std::filesystem::file_size(file_path);
+	vector<uchar> buffer(size);
 	file.read(reinterpret_cast<char*>(buffer.data()), size);
 
 	if (addNullTerminator)

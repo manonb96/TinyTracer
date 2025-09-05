@@ -1,5 +1,5 @@
 #pragma once
-#include "../../utils/precomp.h"
+#include "../../utils/precomp.hpp"
 
 struct GLFWmonitor;
 struct GLFWwindow;

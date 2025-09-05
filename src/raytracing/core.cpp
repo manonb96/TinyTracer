@@ -23,7 +23,7 @@ Core::~Core() {
     lights.clear();
 }
 
-void Core::RenderScene(unsigned char* pixels) {
+void Core::RenderScene(uchar* pixels) {
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
             Ray* primaryRay = mainCamera->GeneratePrimaryRay(x, y);
