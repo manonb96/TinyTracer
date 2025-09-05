@@ -2,6 +2,9 @@
 cmake_minimum_required(VERSION 3.5)
 project(TinyTracer)
 
+# Set Graphics API as VULKAN or OPENGL
+set(GRAPHICS_API "VULKAN")
+
 # Packages
 find_package(Vulkan REQUIRED)
 
@@ -72,3 +75,15 @@ set(SHADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 target_compile_features(TinyTracer PRIVATE cxx_std_20)
 target_precompile_headers(TinyTracer PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/utils/precomp.hpp")
 target_compile_definitions(TinyTracer PRIVATE SHADER_DIR="${SHADER_DIR}")
+
+if(GRAPHICS_API STREQUAL "VULKAN")
+	target_compile_definitions(TinyTracer PRIVATE GRAPHICS_API_STRING=\"Vulkan\")
+	target_compile_definitions(TinyTracer PRIVATE VULKAN=1)
+	target_compile_definitions(TinyTracer PRIVATE OPENGL=0)
+elseif(GRAPHICS_API STREQUAL "OPENGL")
+	target_compile_definitions(TinyTracer PRIVATE GRAPHICS_API_STRING=\"OpenGL\")
+	target_compile_definitions(TinyTracer PRIVATE VULKAN=0)
+	target_compile_definitions(TinyTracer PRIVATE OPENGL=1)
+else()
+    message(FATAL_ERROR "Unknown GRAPHICS_API value: ${GRAPHICS_API}")
+endif()
