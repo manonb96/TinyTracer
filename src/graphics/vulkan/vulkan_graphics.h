@@ -7,7 +7,7 @@
 
 class VulkanGraphics final : public Graphics {
 public:
-	explicit VulkanGraphics(gsl::not_null<Window*> window);
+	explicit VulkanGraphics(gsl::not_null<Window*> window, Shader* shader);
 	~VulkanGraphics();
 
 	bool BeginFrame() override;
@@ -16,7 +16,7 @@ public:
 	void CreateVertexBuffer(gsl::span<Vertex> vertices) override;
 	void CreateIndexBuffer(gsl::span<int> indices) override;
 	void CreateTexture(unsigned char* pixels) override;
-	void RenderIndexedBuffer(unsigned int shaderID) override;
+	void RenderIndexedBuffer() override;
 	void SetViewProjection(glm::mat4 view, glm::mat4 projection) override;
 
 private:
