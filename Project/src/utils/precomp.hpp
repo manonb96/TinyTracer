@@ -3,7 +3,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <gsl/gsl>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <vector>
 #include <functional>
 #include <optional>
