@@ -1,28 +1,26 @@
 #include "shader.hpp"
 #include <spdlog/spdlog.h>
 
-// ***********************************************************
-// Source: https://learnopengl.com/Getting-started/Shaders
-// ***********************************************************
-
 string GetCompileShaderCommand(cstring path) {
 	return std::format("glslc {} -o {}.spv", path, path);
 }
 
 Shader::Shader(const string name, string vertexShaderPath, string fragmentShaderPath)
-	: name_(name), vertexShaderPath_(vertexShaderPath), fragmentShaderPath_(fragmentShaderPath) {
+	: name_(name) {
+	vertexShaderPath_ = SHADER_DIR + vertexShaderPath;
+	fragmentShaderPath_ = SHADER_DIR + fragmentShaderPath;
 
 #if OPENGL
 	// TODO: Preprocess files to add #include
 #elif VULKAN
 	// Create SPIR-V files
-	string compileVertexShaderCommand = GetCompileShaderCommand(vertexShaderPath.c_str());
+	string compileVertexShaderCommand = GetCompileShaderCommand(vertexShaderPath_.c_str());
 
 	if (system(compileVertexShaderCommand.c_str()) != 0) {
 		spdlog::error("[Vulkan Error] Vertex shader compilation failed");
 	}
 
-	string compileFragmentShaderCommand = GetCompileShaderCommand(fragmentShaderPath.c_str());
+	string compileFragmentShaderCommand = GetCompileShaderCommand(fragmentShaderPath_.c_str());
 	if (system(compileFragmentShaderCommand.c_str()) != 0) {
 		spdlog::error("[Vulkan Error] Fragment shader compilation failed");
 	}

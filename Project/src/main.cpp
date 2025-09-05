@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/glfw/glfw_initialization.hpp"
 #include "graphics/glfw/glfw_window.hpp"
@@ -35,7 +35,7 @@ int main() {
 	};
 
 	// Initialize shaders
-	Shader shader("basic", "shaders/basic.vert", "shaders/basic.frag");
+	Shader shader("basic", "basic.vert", "basic.frag");
 
 	// Initialize Graphics API
 #if OPENGL
