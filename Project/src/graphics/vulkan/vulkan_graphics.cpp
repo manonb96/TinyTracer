@@ -648,12 +648,12 @@ void VulkanGraphics::CreateGraphicsPipeline() {
 	VkPipelineLayoutCreateInfo layout_info = {};
 	layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 
-	// VkPushConstantRange model_matrix_range = {};
-	// model_matrix_range.offset = 0;
-	// model_matrix_range.size = 16 * sizeof(float); // TODO: Change to matrix
-	// model_matrix_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	// layout_info.pushConstantRangeCount = 1;
-	// layout_info.pPushConstantRanges = &model_matrix_range;
+	 VkPushConstantRange model_matrix_range = {};
+	 model_matrix_range.offset = 0;
+	 model_matrix_range.size = sizeof(mat4);
+	 model_matrix_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+	 layout_info.pushConstantRangeCount = 1;
+	 layout_info.pPushConstantRanges = &model_matrix_range;
 
 	std::array<VkDescriptorSetLayout, 2> set_layouts = { uniform_set_layout_, texture_set_layout_ };
 	layout_info.setLayoutCount = set_layouts.size();
