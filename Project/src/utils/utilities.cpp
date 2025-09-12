@@ -11,6 +11,13 @@ float lerp(float start, float end, float t)
 	return start + t * (end - start);
 }
 
+Color lerp(Color start, Color end, float t)
+{
+	float3 rgb = start.rgb + t * (end.rgb - start.rgb);
+	float a = lerp(start.a, end.a, t);
+	return Color(rgb, a);
+}
+
 vector<uchar> ReadFile(std::filesystem::path file_path, bool addNullTerminator) {
 	if (!std::filesystem::exists(file_path)) {
 		spdlog::error("No file found at {}", file_path.string());

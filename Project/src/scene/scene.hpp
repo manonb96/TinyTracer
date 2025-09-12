@@ -9,5 +9,4 @@ public:
 
 	vector<Sphere*> spheres;
 	vector<Light*> lights;
-	Color backgroundColor;
 };

@@ -25,6 +25,7 @@ inline IntersectionPoint::IntersectionPoint(float3 p) : point(p) {}
 class RayTracer {
 public:
 	RayTracer() = default;
+	Color GetBackgroundColor(const Ray& primaryRay);
 	Color TraceRay(Ray& primaryRay, const Scene& scene);
 	bool IntersectRaySphere(Ray& ray, const Sphere& sphere);
 };

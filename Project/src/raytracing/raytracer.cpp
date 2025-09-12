@@ -1,7 +1,7 @@
 #include "raytracer.hpp"
 
 Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
-    Color color = scene.backgroundColor;
+    Color color = COLOR_BLACK;
 
     // Find the closest sphere
     Sphere* nearestObject = nullptr;
@@ -39,8 +39,16 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
             }
         }
     }
+    else {
+        color = GetBackgroundColor(primaryRay);
+    }
 
     return color;
+}
+
+Color RayTracer::GetBackgroundColor(const Ray& primaryRay) {
+    float a = 0.5f * (primaryRay.direction.y + 1.0f);
+    return lerp(Color(1.0, 1.0, 1.0), Color(0.5, 0.7, 1.0), 1.0f - a);
 }
 
 bool RayTracer::IntersectRaySphere(Ray& ray, const Sphere& sphere) {
