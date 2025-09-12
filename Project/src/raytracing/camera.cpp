@@ -16,7 +16,7 @@ Camera::Camera(float3 pos, float3 target, float3 up) {
 	aspectRatio = WIDTH / HEIGHT;
 }
 
-Ray* Camera::GeneratePrimaryRay(int x, int y)
+Ray Camera::GeneratePrimaryRay(int x, int y)
 {
 	float x_ndc = ((float)x + 0.5f) / WIDTH;
 	float y_ndc = ((float)y + 0.5f) / HEIGHT;
@@ -25,5 +25,5 @@ Ray* Camera::GeneratePrimaryRay(int x, int y)
 
 	float3 n = normalize(forward + x_screen * right + y_screen * up);
 
-	return new Ray(position, n);
+	return Ray(position, n);
 }

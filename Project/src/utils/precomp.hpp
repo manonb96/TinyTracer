@@ -11,3 +11,4 @@
 #include "base_types.hpp"
 #include "constants.hpp"
 #include "utilities.hpp"
+#include "color.hpp"

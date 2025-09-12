@@ -12,7 +12,7 @@ public:
 	Camera* mainCamera = nullptr;
 	vector<Sphere*> spheres;
 	vector<Light*> lights;
-	float3 backgroundColor;
+	Color backgroundColor;
 	void InitializeScene();
-	void RenderScene(uchar* pixels);
+	void RaytraceScene(uchar* pixels);
 };

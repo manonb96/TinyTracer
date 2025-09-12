@@ -6,6 +6,11 @@ bool streq(cstring left, cstring right) {
 	return std::strcmp(left, right) == 0;
 }
 
+float lerp(float start, float end, float t)
+{
+	return start + t * (end - start);
+}
+
 vector<uchar> ReadFile(std::filesystem::path file_path, bool addNullTerminator) {
 	if (!std::filesystem::exists(file_path)) {
 		spdlog::error("No file found at {}", file_path.string());

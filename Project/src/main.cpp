@@ -59,7 +59,7 @@ int main() {
 	
 	// Calculate pixel values and set up textures
 	uchar* pixels = new uchar[WIDTH * HEIGHT * 4];
-	core->RenderScene(pixels);
+	core->RaytraceScene(pixels);
 	graphics.CreateTexture(pixels);
 
 	while (!window.ShouldClose()) {

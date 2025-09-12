@@ -9,7 +9,7 @@ void Core::InitializeScene() {
 	mainCamera = new Camera(float3(0.f, 0.f, 0.f));
     spheres.push_back(new Sphere(float3(0.0f, 0.0f, 5.0f), 2.f));
     lights.push_back(new Light(float3(0.0f, 0.0f, 2.f), float3(1.0f, 1.0f, 1.0f)));
-    backgroundColor = float3(0, 0, 0);
+    backgroundColor = Color(0.0f, 0.0f, 0.0f);
 }
 
 Core::~Core() {
@@ -22,58 +22,50 @@ Core::~Core() {
     lights.clear();
 }
 
-void Core::RenderScene(uchar* pixels) {
+void Core::RaytraceScene(uchar* pixels) {
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
-            Ray* primaryRay = mainCamera->GeneratePrimaryRay(x, y);
-            float3 color = backgroundColor;
-            float alpha = 1.0f;
-            Sphere* nearestObject = nullptr;
-            float tNear = INFINITY;
+            Ray primaryRay = mainCamera->GeneratePrimaryRay(x, y);
+            Color color = backgroundColor;
 
             // Find the closest sphere
+            Sphere* nearestObject = nullptr;
+            float tNear = INFINITY;
             for (Sphere* sphere : spheres) {
-                bool hit = sphere->IntersectRaySphere(*primaryRay);
-                if (hit && primaryRay->t < tNear) {
+                bool hit = sphere->IntersectRaySphere(primaryRay);
+                if (hit && primaryRay.t < tNear) {
                     nearestObject = sphere;
-                    tNear = primaryRay->t;
+                    tNear = primaryRay.t;
                 }
             }
 
             // Cast the shadow rays
             if (nearestObject != nullptr) {
-                IntersectionPoint* ip = new IntersectionPoint(float3(primaryRay->origin + primaryRay->direction * tNear));
-                ip->normal = normalize(ip->point - nearestObject->center);
+                IntersectionPoint ip(float3(primaryRay.origin + primaryRay.direction * tNear));
+                ip.normal = normalize(ip.point - nearestObject->center);
                 for (Light* light : lights) {
-                    Ray* shadowRay = new Ray(ip->point + OFFSET * ip->normal, normalize(light->position - ip->point));
+                    Ray shadowRay(ip.point + OFFSET * ip.normal, normalize(light->position - ip.point));
                     bool occluded = false;
-                    float distanceToLight = length(light->position - ip->point);
+                    float distanceToLight = length(light->position - ip.point);
                     for (Sphere* sphere : spheres) {
-                        bool hit = sphere->IntersectRaySphere(*shadowRay);
-                        if (hit && shadowRay->t < distanceToLight) {
+                        bool hit = sphere->IntersectRaySphere(shadowRay);
+                        if (hit && shadowRay.t < distanceToLight) {
                             occluded = true;
                             break;
                         }
                     }
 
 					if (!occluded) {
-						float3 L = normalize(light->position - ip->point);
-						float clampedCosTheta = std::max(dot(ip->normal, L), 0.f);
+						float3 L = normalize(light->position - ip.point);
+						float clampedCosTheta = std::max(dot(ip.normal, L), 0.f);
 						float attenuation = 1.0f / (distanceToLight * distanceToLight);
-						float3 diffuseColor = light->color * nearestObject->color * clampedCosTheta * attenuation;
-						color += attenuation * nearestObject->color;
+						float3 diffuseColor = light->color * nearestObject->color.rgb * clampedCosTheta * attenuation;
+						color.rgb += attenuation * nearestObject->color.rgb;
 					}
-                    delete shadowRay;
                 }
-                delete ip;
             }
-            delete primaryRay;
-
-            int offset = (y * WIDTH + x) * 4;
-            pixels[offset + 0] = (int)(color.x * 255.f);
-            pixels[offset + 1] = (int)(color.y * 255.f);
-            pixels[offset + 2] = (int)(color.z * 255.f);
-            pixels[offset + 3] = (int)(alpha * 255.f);
+            
+            WriteColor(pixels, x, y, color);
         }
     }
 }

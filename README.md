@@ -10,6 +10,7 @@ Its a work in progress and more features will be added over the time to come!
 ### Next steps
 - Improving ray tracing
 - Camera transformations with OpenGL and Vulkan
+- Alpha blending
 - GPU ray tracing
 - Rendering meshes
 - Post processing
@@ -58,3 +59,4 @@ This project uses the following packages:
 ### References
 - Joey de Vries' [LearnOpenGL-book](https://learnopengl.com/) to set up OpenGL
 - Hristo Lliev's [Vulkan course](https://www.udemy.com/course/graphics-programming-with-vulkan-and-cpp) to set up Vulkan
+- Peter Shirley's [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) to set up ray tracing

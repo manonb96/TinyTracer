@@ -6,6 +6,7 @@
 #include <math.h>
 #include <cmath>
 
+// Aliases
 using uint = unsigned int; // std::uint32_t
 using uchar = unsigned char; // std::uint8_t
 using mat4 = glm::mat4;
@@ -17,6 +18,7 @@ using span = gsl::span<T>;
 template<typename T>
 using vector = std::vector<T>;
 
+// 2D
 struct int2 {
 	int x, y;
 	int2();
@@ -38,6 +40,7 @@ inline float2::float2() : x(0.0f), y(0.0f) {}
 inline float2::float2(float a) : x(a), y(a) {}
 inline float2::float2(float a, float b) : x(a), y(b) {}
 
+// 3D
 struct float3 {
 	float x, y, z;
 	float3();
