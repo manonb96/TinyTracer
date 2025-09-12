@@ -2,11 +2,24 @@
 A ray tracing application built from the ground up. 
 Its a work in progress and more features will be added over the time to come!
 
-### Building from command line
+### Features
+- CPU Ray Tracing
+- Texture rendering using OpenGL or Vulkan
+- Building with CMake
+
+### Next steps
+- Improving ray tracing
+- Camera transformations with OpenGL and Vulkan
+- GPU ray tracing
+- Rendering meshes
+- Post processing
+- GUI
+
+### Building
 To build the project, I am using [CMake](https://cmake.org/) (version 3.5 or higher) with [Ninja](https://ninja-build.org/) as the build system generator and the Microsoft Visual C++ (MSVC) compiler and linker,
 targeting 64-bit Windows.
 
-From the Developer Command Prompt for Visual Studio 2022, this can be done using the following commands:
+It can be build from Visual Studio IDE directly, or from the command line using the Developer Command Prompt for Visual Studio 2022 with the following commands:
 
 1. Set up environment to 64-bit version by running <code>vcvars64.bat</code>. Example:
 
