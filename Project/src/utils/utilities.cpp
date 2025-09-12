@@ -1,4 +1,3 @@
-#include "precomp.hpp"
 #include "utilities.hpp"
 #include <fstream>
 #include <spdlog/spdlog.h>

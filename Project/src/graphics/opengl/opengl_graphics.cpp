@@ -1,5 +1,4 @@
 #include "opengl_graphics.hpp"
-#include "../../utils/constants.hpp"
 
 #pragma region Helpers
 

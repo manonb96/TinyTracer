@@ -1,7 +1,6 @@
 #include <GLFW/glfw3.h>
 #include "glfw_window.hpp"
 #include "glfw_monitor.hpp"
-#include "../../utils/constants.hpp"
 
 Window::Window(cstring name, int2 size) {
 

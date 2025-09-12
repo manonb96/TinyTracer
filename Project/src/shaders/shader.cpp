@@ -1,5 +1,4 @@
 #include "shader.hpp"
-#include <spdlog/spdlog.h>
 
 string GetCompileShaderCommand(cstring path) {
 	return std::format("glslc {} -o {}.spv", path, path);

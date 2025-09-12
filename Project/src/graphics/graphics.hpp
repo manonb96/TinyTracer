@@ -1,11 +1,9 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <spdlog/spdlog.h>
 #include "glfw/glfw_window.hpp"
 #include "vertex.hpp"
 #include "uniform_transformations.hpp"
-#include "../utils/precomp.hpp"
 #include "../shaders/shader.hpp"
 
 class Graphics {

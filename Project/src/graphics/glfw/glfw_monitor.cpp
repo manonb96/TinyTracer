@@ -1,5 +1,4 @@
 #include <GLFW/glfw3.h>
-#include "../../utils/precomp.hpp"
 #include "glfw_monitor.hpp"
 
 GLFWmonitor* GetPrimaryMonitor() {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../utils/precomp.hpp"
 #include <vulkan/vulkan.h>
 
 struct Vertex {

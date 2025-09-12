@@ -1,5 +1,4 @@
 #pragma once
-#include "../utils/base_types.hpp"
 
 class Light {
 public: 

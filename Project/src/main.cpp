@@ -7,7 +7,6 @@
 #include "graphics/opengl/opengl_graphics.hpp"
 #include "graphics/vulkan/vulkan_graphics.hpp"
 
-#include "utils/constants.hpp"
 #include "raytracing/core.hpp"
 #include "shaders/shader.hpp"
 

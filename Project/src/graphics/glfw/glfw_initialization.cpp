@@ -1,7 +1,5 @@
 #include <GLFW/glfw3.h>
-#include <spdlog/spdlog.h>
 #include "glfw_initialization.hpp"
-#include "../../utils/precomp.hpp"
 
 void glfw_error_callback(int error_code, cstring message) {
 	spdlog::error("Glfw validation: {}", message);
