@@ -1,9 +1,11 @@
 #pragma once
 
 #include <filesystem>
-#include "color.hpp"
+
+struct Color;
 
 bool streq(cstring left, cstring right);
+float saturate(float x);
 float lerp(float start, float end, float t);
 Color lerp(Color start, Color end, float t);
 

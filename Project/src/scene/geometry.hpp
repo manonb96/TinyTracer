@@ -8,6 +8,7 @@ struct Sphere {
 	float3 center;
 	float radius;
 	Color color = Color(1, 0, 0);
+	// TODO: Add front_face
 };
 
 inline Sphere::Sphere(float3 c, float r) : center(c), radius(r) {}

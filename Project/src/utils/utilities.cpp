@@ -1,9 +1,17 @@
 #include "utilities.hpp"
+#include "color.hpp"
 #include <fstream>
 #include <spdlog/spdlog.h>
 
 bool streq(cstring left, cstring right) {
 	return std::strcmp(left, right) == 0;
+}
+
+float saturate(float x)
+{
+	if (x < 0.0f) return 0.0f;
+	if (x > 1.0f) return 1.0f;
+	return x;
 }
 
 float lerp(float start, float end, float t)

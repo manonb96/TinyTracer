@@ -18,11 +18,15 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
     if (nearestObject != nullptr) {
         IntersectionPoint ip(float3(primaryRay.origin + primaryRay.direction * tNear));
         ip.normal = normalize(ip.point - nearestObject->center);
+
         for (Light* light : scene.lights) {
             Ray shadowRay(ip.point + OFFSET * ip.normal, normalize(light->position - ip.point));
             bool occluded = false;
             float distanceToLight = length(light->position - ip.point);
             for (Sphere* sphere : scene.spheres) {
+                if (sphere == nearestObject) {
+                    continue;
+                }
                 bool hit = IntersectRaySphere(shadowRay, *sphere);
                 if (hit && shadowRay.t < distanceToLight) {
                     occluded = true;
@@ -35,7 +39,7 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
                 float clampedCosTheta = std::max(dot(ip.normal, L), 0.f);
                 float attenuation = 1.0f / (distanceToLight * distanceToLight);
                 float3 diffuseColor = light->color * nearestObject->color.rgb * clampedCosTheta * attenuation;
-                color.rgb += attenuation * nearestObject->color.rgb;
+                color.rgb += diffuseColor;
             }
         }
     }
