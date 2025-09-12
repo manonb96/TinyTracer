@@ -1,10 +1,9 @@
 #pragma once
-
-class Ray;
+#include "raytracer.hpp"
 
 class Camera {
 public:
-	Camera();
+	Camera(float3 position);
 	Camera(float3 pos, float3 target, float3 up);
 	~Camera() = default;
 	float3 position;

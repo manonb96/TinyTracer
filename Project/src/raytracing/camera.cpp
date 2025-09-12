@@ -1,8 +1,7 @@
 #include "camera.hpp"
-#include "raytracer.hpp"
 
-Camera::Camera() {
-	position = float3(0.f, 0.f, 0.f);
+Camera::Camera(float3 position) : position(position)
+{
 	right = float3(1.f, 0.f, 0.f);
 	up = float3(0.f, 1.f, 0.f);
 	forward = float3(0.f, 0.f, 1.f);

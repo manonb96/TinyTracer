@@ -9,7 +9,7 @@ class Core {
 public: 
 	Core() = default;
 	~Core();
-	Camera* mainCamera;
+	Camera* mainCamera = nullptr;
 	vector<Sphere*> spheres;
 	vector<Light*> lights;
 	float3 backgroundColor;

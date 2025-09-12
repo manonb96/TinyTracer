@@ -6,7 +6,7 @@
 #include <iostream>
 
 void Core::InitializeScene() {
-	mainCamera = new Camera();
+	mainCamera = new Camera(float3(0.f, 0.f, 0.f));
     spheres.push_back(new Sphere(float3(0.0f, 0.0f, 5.0f), 2.f));
     lights.push_back(new Light(float3(0.0f, 0.0f, 2.f), float3(1.0f, 1.0f, 1.0f)));
     backgroundColor = float3(0, 0, 0);
