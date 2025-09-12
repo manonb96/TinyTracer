@@ -1,4 +1,5 @@
 #pragma once
+#include "../scene/scene.hpp"
 
 struct Ray {
 	Ray() = default;
@@ -20,3 +21,10 @@ struct IntersectionPoint {
 };
 
 inline IntersectionPoint::IntersectionPoint(float3 p) : point(p) {}
+
+class RayTracer {
+public:
+	RayTracer() = default;
+	Color TraceRay(Ray& primaryRay, const Scene& scene);
+	bool IntersectRaySphere(Ray& ray, const Sphere& sphere);
+};

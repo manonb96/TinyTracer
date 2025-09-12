@@ -1,14 +1,13 @@
 #pragma once
 #include "../utils/base_types.hpp"
-#include "raytracer.hpp"
 
-class Sphere {
-public: 
+struct Sphere { 
 	Sphere(float3 c, float r);
 	~Sphere() = default;
+	
 	float3 center;
 	float radius;
 	Color color = Color(1, 0, 0);
-
-	bool IntersectRaySphere(Ray& ray);
 };
+
+inline Sphere::Sphere(float3 c, float r) : center(c), radius(r) {}

@@ -1,18 +1,16 @@
 #pragma once
-#include <vector>
 
-class Camera;
-class Sphere;
-class Light;
+#include "camera.hpp"
+#include "../scene/scene.hpp"
 
 class Core {
 public: 
+	Camera* mainCamera = nullptr;
+	Scene* scene = nullptr;
+	RayTracer* rayTracer = nullptr;
+	
 	Core() = default;
 	~Core();
-	Camera* mainCamera = nullptr;
-	vector<Sphere*> spheres;
-	vector<Light*> lights;
-	Color backgroundColor;
 	void InitializeScene();
-	void RaytraceScene(uchar* pixels);
+	void GetPixels(uchar* pixels);
 };
