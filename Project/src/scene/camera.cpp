@@ -7,13 +7,14 @@ Camera::Camera(float3 position) : cameraCenter(position)
 	up = float3(0.f, 1.f, 0.f);
 	forward = float3(0.f, 0.f, 1.f);
 	
+	// Default values
 	aspectRatio = (float)IMAGE_WIDTH / (float)IMAGE_HEIGHT;
 	focalLength = 1.0f;
 
 	PrecomputeImagePlane();
 }
 
-Ray Camera::GeneratePrimaryRay(int x, int y)
+Ray Camera::GeneratePrimaryRay(float x, float y)
 {
 	float3 pixelCenter = float3(pixelTopLeft.x + x * pixelU.x, pixelTopLeft.y + y * pixelV.y, pixelTopLeft.z);
 	float3 direction = normalize(pixelCenter - cameraCenter);

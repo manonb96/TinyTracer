@@ -5,7 +5,7 @@
 void Core::InitializeCore() {
 	mainCamera = new Camera(float3(0.f, 0.f, 0.f));
     scene = new Scene();
-    rayTracer = new RayTracer();
+    rayTracer = new RayTracer(8);
 }
 
 Core::~Core() {
@@ -19,8 +19,7 @@ void Core::GetPixels(uchar* pixels) {
     
     for (int y = 0; y < IMAGE_HEIGHT; y++) {
         for (int x = 0; x < IMAGE_WIDTH; x++) {
-            Ray primaryRay = mainCamera->GeneratePrimaryRay(x, y);
-            Color color = rayTracer->TraceRay(primaryRay, *scene);            
+            Color color = rayTracer->GetPixelColor(x, y, *mainCamera, *scene);            
             WriteColor(pixels, x, y, color);
         }
     }

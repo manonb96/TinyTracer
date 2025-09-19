@@ -28,6 +28,11 @@ Color lerp(Color start, Color end, float t)
 	return Color(r, g, b, a);
 }
 
+float random() {
+	// random in [0, 1)
+	return std::rand() / (RAND_MAX + 1.0);
+}
+
 vector<uchar> ReadFile(std::filesystem::path file_path, bool addNullTerminator) {
 	if (!std::filesystem::exists(file_path)) {
 		spdlog::error("No file found at {}", file_path.string());

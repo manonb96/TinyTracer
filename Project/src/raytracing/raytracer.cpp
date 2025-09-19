@@ -1,5 +1,26 @@
 #include "raytracer.hpp"
 
+RayTracer::RayTracer(int spp) : samplesPerPixel(spp)
+{ 
+    samplesPerPixelScale = 1.0f / spp;
+}
+
+Color RayTracer::GetPixelColor(int x, int y, Camera& camera, const Scene& scene)
+{
+    Color color = COLOR_BLACK;
+    
+    for (int i = 0; i < samplesPerPixel; i++) 
+    {
+        float offsetX = random() - 0.5f;
+        float offsetY = random() - 0.5f;
+        Ray primaryRay = camera.GeneratePrimaryRay(x + offsetX, y + offsetY);
+        color += TraceRay(primaryRay, scene);
+    }
+
+    color *= samplesPerPixelScale;
+    return color;
+}
+
 Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
     Color color = COLOR_BLACK;
 

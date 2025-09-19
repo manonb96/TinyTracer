@@ -1,7 +1,8 @@
 #pragma once
 
-#include "camera.hpp"
+#include "../scene/camera.hpp"
 #include "../scene/scene.hpp"
+#include "raytracer.hpp"
 
 class Core {
 public: 

@@ -19,7 +19,24 @@ inline Color::Color() : r(0.0f), g(0.0f), b(0.0f), a(1.0f) {}
 inline Color::Color(float r, float g, float b) : r(r), g(g), b(b), a(1.0f) {}
 inline Color::Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {}
 inline Color::Color(float3 rgb, float a) : rgb(rgb), a(a) {}
+inline Color operator+(Color firstColor, Color secondColor)
+{
+    return Color(firstColor.r + secondColor.r, firstColor.g + secondColor.g, firstColor.b + secondColor.b, firstColor.a + secondColor.a);
+}
 inline Color operator*(float scalar, Color color) { return Color(scalar * color.r, scalar * color.g, scalar * color.b, color.a); } // NOTE: alpha is not scaled
+inline Color operator/(Color color, float s)
+{
+    return Color(color.r / s, color.g / s, color.b / s, color.a / s);
+}
+inline Color& operator+=(Color& firstColor, const Color& secondColor) {
+    firstColor.r += secondColor.r; firstColor.g += secondColor.g; firstColor.b += secondColor.b; firstColor.a += secondColor.a; return firstColor;
+}
+inline Color& operator*=(Color& color, const float s) {
+    color.r *= s; color.g *= s; color.b *= s; color.a *= s; return color;
+}
+inline Color& operator/=(Color& color, const float s) {
+    color.r /= s; color.g /= s; color.b /= s; color.a /= s; return color;
+}
 inline Color Clamp(const Color& pixel_value)
 {
     float r = saturate(pixel_value.r);

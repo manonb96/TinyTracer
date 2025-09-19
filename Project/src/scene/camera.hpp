@@ -1,12 +1,12 @@
 #pragma once
-#include "raytracer.hpp"
+#include "../raytracing/ray.hpp"
 
 class Camera {
 public:
 	Camera(float3 position);
 	~Camera() = default;
 
-	Ray GeneratePrimaryRay(int x, int y);
+	Ray GeneratePrimaryRay(float x, float y);
 private:
 	float3 cameraCenter;
 	float3 right;
