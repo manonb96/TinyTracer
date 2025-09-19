@@ -11,6 +11,6 @@ public:
 	
 	Core() = default;
 	~Core();
-	void InitializeScene();
+	void InitializeCore();
 	void GetPixels(uchar* pixels);
 };

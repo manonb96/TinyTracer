@@ -17,7 +17,7 @@ int main() {
 
 	// Create window
 	cstring windowName = "GLFW Window | " GRAPHICS_API_STRING;
-	Window window(windowName, int2(WIDTH, HEIGHT));
+	Window window(windowName, int2(VIEWPORT_WIDTH, VIEWPORT_HEIGHT));
 	window.TryMoveToPrimaryMonitor();
 
 	// Initialize buffers
@@ -55,10 +55,10 @@ int main() {
 
 	// Initialize ray tracing core
 	Core* core = new Core();
-	core->InitializeScene();
+	core->InitializeCore();
 	
 	// Calculate pixel values and set up textures
-	uchar* pixels = new uchar[WIDTH * HEIGHT * 4];
+	uchar* pixels = new uchar[IMAGE_WIDTH * IMAGE_HEIGHT * 4];
 	core->GetPixels(pixels);
 	graphics.CreateTexture(pixels);
 

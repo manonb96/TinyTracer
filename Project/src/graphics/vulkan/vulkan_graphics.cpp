@@ -1216,7 +1216,7 @@ void VulkanGraphics::CreateTextureSampler() {
 }
 
 void VulkanGraphics::CreateTexture(uchar* pixels) {
-	int2 image_extents = int2(WIDTH, HEIGHT);
+	int2 image_extents = int2(IMAGE_WIDTH, IMAGE_HEIGHT);
 	int channels = 4;
 	
 	VkDeviceSize buffer_size = image_extents.x * image_extents.y * channels;

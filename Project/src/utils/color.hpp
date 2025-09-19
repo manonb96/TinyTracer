@@ -34,7 +34,7 @@ inline void WriteColor(uchar* pixels, int x, int y, const Color& pixel_value)
 {
     Color clampedColor = Clamp(pixel_value);
 
-    int offset = (y * WIDTH + x) * 4;
+    int offset = (y * IMAGE_WIDTH + x) * 4;
     pixels[offset + 0] = (int)(clampedColor.r * 255.f);
     pixels[offset + 1] = (int)(clampedColor.g * 255.f);
     pixels[offset + 2] = (int)(clampedColor.b * 255.f);
