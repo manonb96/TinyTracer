@@ -52,7 +52,7 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
 
 Color RayTracer::GetBackgroundColor(const Ray& primaryRay) {
     float a = 0.5f * (primaryRay.direction.y + 1.0f);
-    return lerp(Color(1.0, 1.0, 1.0), Color(0.5, 0.7, 1.0), 1.0f - a);
+    return lerp(COLOR_WHITE, COLOR_LIGHTBLUE, 1.0f - a);
 }
 
 bool RayTracer::IntersectRaySphere(Ray& ray, const Sphere& sphere) {

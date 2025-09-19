@@ -15,7 +15,7 @@ Camera::Camera(float3 position) : cameraCenter(position)
 
 Ray Camera::GeneratePrimaryRay(int x, int y)
 {
-	float3 pixelCenter = pixelTopLeft + x * pixelU + y * pixelV;
+	float3 pixelCenter = float3(pixelTopLeft.x + x * pixelU.x, pixelTopLeft.y + y * pixelV.y, pixelTopLeft.z);
 	float3 direction = normalize(pixelCenter - cameraCenter);
 
 	return Ray(cameraCenter, direction);

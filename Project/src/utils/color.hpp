@@ -42,4 +42,6 @@ inline void WriteColor(uchar* pixels, int x, int y, const Color& pixel_value)
 }
 
 static const Color COLOR_BLACK = Color(0.0f, 0.0f, 0.0f);
+static const Color COLOR_WHITE = Color(1.0f, 1.0f, 1.0f);
 static const Color COLOR_RED = Color(1.0f, 0.0f, 0.0f);
+static const Color COLOR_LIGHTBLUE = Color(0.5, 0.7, 1.0);

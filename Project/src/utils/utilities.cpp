@@ -21,9 +21,11 @@ float lerp(float start, float end, float t)
 
 Color lerp(Color start, Color end, float t)
 {
-	float3 rgb = start.rgb + t * (end.rgb - start.rgb);
+	float r = lerp(start.r, end.r, t);
+	float g = lerp(start.g, end.g, t);
+	float b = lerp(start.b, end.b, t);
 	float a = lerp(start.a, end.a, t);
-	return Color(rgb, a);
+	return Color(r, g, b, a);
 }
 
 vector<uchar> ReadFile(std::filesystem::path file_path, bool addNullTerminator) {
