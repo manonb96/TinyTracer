@@ -4,13 +4,21 @@
 class Camera {
 public:
 	Camera(float3 position);
-	Camera(float3 pos, float3 target, float3 up);
 	~Camera() = default;
-	float3 position;
+
+	Ray GeneratePrimaryRay(int x, int y);
+private:
+	float3 cameraCenter;
 	float3 right;
 	float3 up;
 	float3 forward;
-	float aspectRatio;
 
-	Ray GeneratePrimaryRay(int x, int y);
+	float3 pixelU;
+	float3 pixelV;
+	float3 pixelTopLeft;
+
+	float aspectRatio;
+	float focalLength;
+
+	void PrecomputeImagePlane();
 };

@@ -1,29 +1,34 @@
 #include "camera.hpp"
 
-Camera::Camera(float3 position) : position(position)
+Camera::Camera(float3 position) : cameraCenter(position)
 {
+	// Default orientation
 	right = float3(1.f, 0.f, 0.f);
 	up = float3(0.f, 1.f, 0.f);
 	forward = float3(0.f, 0.f, 1.f);
-	aspectRatio = (float)WIDTH / (float)HEIGHT;
-}
+	
+	aspectRatio = (float)IMAGE_WIDTH / (float)IMAGE_HEIGHT;
+	focalLength = 1.0f;
 
-Camera::Camera(float3 pos, float3 target, float3 up) {
-	position = pos;
-	forward = normalize(target - pos);
-	right = normalize(cross(forward, up));
-	up = cross(right, forward);
-	aspectRatio = WIDTH / HEIGHT;
+	PrecomputeImagePlane();
 }
 
 Ray Camera::GeneratePrimaryRay(int x, int y)
 {
-	float x_ndc = ((float)x + 0.5f) / WIDTH;
-	float y_ndc = ((float)y + 0.5f) / HEIGHT;
-	float x_screen = ((2.0f * x_ndc) - 1.0f) * aspectRatio;
-	float y_screen = (2.0f * y_ndc) - 1.0f;
+	float3 pixelCenter = pixelTopLeft + x * pixelU + y * pixelV;
+	float3 direction = normalize(pixelCenter - cameraCenter);
 
-	float3 n = normalize(forward + x_screen * right + y_screen * up);
+	return Ray(cameraCenter, direction);
+}
 
-	return Ray(position, n);
+void Camera::PrecomputeImagePlane() {
+	float imagePlaneHeight = 2.0f;
+	float imagePlaneWidth = imagePlaneHeight * aspectRatio;
+
+	float3 imagePlaneCenter = cameraCenter + forward * focalLength;
+	float3 imagePlaneTopleft = imagePlaneCenter - (right * 0.5f * imagePlaneWidth) - (up * 0.5f * imagePlaneHeight);
+
+	pixelU = float3(imagePlaneWidth / (float)IMAGE_WIDTH, 0, 0);
+	pixelV = float3(0, imagePlaneHeight / (float)IMAGE_HEIGHT, 0);
+	pixelTopLeft = imagePlaneTopleft + 0.5f * pixelU + 0.5f * pixelV;
 }
