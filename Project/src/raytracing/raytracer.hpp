@@ -5,13 +5,11 @@
 
 struct IntersectionPoint {
 	IntersectionPoint() = default;
-	IntersectionPoint(float3 p);
+	IntersectionPoint(float3 p) : point(p) {}
 
 	float3 point;
 	float3 normal;
 };
-
-inline IntersectionPoint::IntersectionPoint(float3 p) : point(p) {}
 
 class RayTracer {
 public:

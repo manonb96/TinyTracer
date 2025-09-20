@@ -41,6 +41,8 @@ struct float3 {
 	float3() : x(0.0f), y(0.0f), z(0.0f) {}
 	float3(float a) : x(a), y(a), z(a) {}
 	float3(float a, float b, float c) : x(a), y(b), z(c) {}
+
+	const float& operator[](int index) const;
 };
 inline float rsqrtf(float x) { return 1.0f / sqrtf(x); }
 inline float3 operator+(float3 a, float3 b) { return float3(a.x + b.x, a.y + b.y, a.z + b.z); }
@@ -56,6 +58,14 @@ inline float3& operator-=(float3& a, const float3& b) {
 }
 inline float3& operator-(float3 a) {
 	a.x = -a.x; a.y = -a.y; a.z = -a.z; return a;
+}
+inline const float& float3::operator[](int index) const {
+	switch (index) {
+	case 0: return x;
+	case 1: return y;
+	case 2: return z;
+	default: throw std::out_of_range("float3 index out of range");
+	}
 }
 inline float dot(float3 a, float3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 inline float length(float3 v) { return sqrtf(dot(v, v)); }
