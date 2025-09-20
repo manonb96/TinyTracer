@@ -22,6 +22,10 @@ float GetRandomFloat() {
 	return std::rand() / (RAND_MAX + 1.0);
 }
 
+float DegreesToRadians(float degrees) {
+	return degrees * PI / 180.0f;
+}
+
 vector<uchar> ReadFile(std::filesystem::path file_path, bool addNullTerminator) {
 	if (!std::filesystem::exists(file_path)) {
 		spdlog::error("No file found at {}", file_path.string());

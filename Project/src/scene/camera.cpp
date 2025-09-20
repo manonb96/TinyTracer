@@ -1,14 +1,14 @@
 #include "camera.hpp"
 
-Camera::Camera(float3 position) : m_cameraCenter(position) {
-	// Default orientation
-	float3 right = float3(1.f, 0.f, 0.f);
-	float3 up = float3(0.f, 1.f, 0.f);
-	float3 forward = float3(0.f, 0.f, 1.f);
+Camera::Camera(float3 position, float3 lookAt, float3 worldUp) : m_cameraCenter(position) {
+	float3 forward = normalize(lookAt - position);
+	float3 right = normalize(cross(worldUp, forward));
+	float3 up = cross(forward, right);
 	
 	// Default values
 	m_aspectRatio = (float)IMAGE_WIDTH / (float)IMAGE_HEIGHT;
 	m_focalLength = 1.0f;
+	m_fieldOfView = 90;
 
 	PrecomputeImagePlane(right, up, forward);
 }
@@ -21,7 +21,9 @@ Ray Camera::GeneratePrimaryRay(float x, float y) {
 }
 
 void Camera::PrecomputeImagePlane(const float3& right, const float3& up, const float3& forward) {
-	float imagePlaneHeight = 2.0f;
+	float theta = DegreesToRadians(m_fieldOfView);
+	float h = tan(theta / 2.f);	
+	float imagePlaneHeight = 2.0f * h * m_focalLength;
 	float imagePlaneWidth = imagePlaneHeight * m_aspectRatio;
 
 	float3 imagePlaneCenter = m_cameraCenter + forward * m_focalLength;
