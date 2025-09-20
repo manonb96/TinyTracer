@@ -7,6 +7,10 @@ public:
 	Scene();
 	~Scene();
 
-	vector<Sphere*> spheres;
-	vector<Light*> lights;
+	const vector<Sphere*>& GetSpheres() const { return m_spheres; }
+	const vector<Light*>& GetLights() const { return m_lights;  }
+
+private:
+	vector<Sphere*> m_spheres;
+	vector<Light*> m_lights;
 };

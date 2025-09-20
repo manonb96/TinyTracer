@@ -3,32 +3,21 @@
 #include <fstream>
 #include <spdlog/spdlog.h>
 
-bool streq(cstring left, cstring right) {
+bool IsStringEqual(cstring left, cstring right) {
 	return std::strcmp(left, right) == 0;
 }
 
-float saturate(float x)
-{
+float Saturate(float x) {
 	if (x < 0.0f) return 0.0f;
 	if (x > 1.0f) return 1.0f;
 	return x;
 }
 
-float lerp(float start, float end, float t)
-{
+float Lerp(float start, float end, float t) {
 	return start + t * (end - start);
 }
 
-Color lerp(Color start, Color end, float t)
-{
-	float r = lerp(start.r, end.r, t);
-	float g = lerp(start.g, end.g, t);
-	float b = lerp(start.b, end.b, t);
-	float a = lerp(start.a, end.a, t);
-	return Color(r, g, b, a);
-}
-
-float random() {
+float GetRandomFloat() {
 	// random in [0, 1)
 	return std::rand() / (RAND_MAX + 1.0);
 }

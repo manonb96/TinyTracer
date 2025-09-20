@@ -2,7 +2,7 @@
 
 #pragma region Helpers
 
-void framebuffer_size_callback(GLFWwindow*, int width, int height) {
+void FramebufferSizeCallback(GLFWwindow*, int width, int height) {
 	glViewport(0, 0, width, height);
 }
 
@@ -11,14 +11,14 @@ void framebuffer_size_callback(GLFWwindow*, int width, int height) {
 #pragma region Graphics Pipeline
 void OpenGLGraphics::AttachShader()
 {
-	vector<uchar> vertexShaderBytes = shader_->GetVertexShaderBytes(true);
-	vector<uchar> fragmentShaderBytes = shader_->GetFragmentShaderBytes(true);
+	vector<uchar> vertexShaderBytes = m_pShader->GetVertexShaderBytes(true);
+	vector<uchar> fragmentShaderBytes = m_pShader->GetFragmentShaderBytes(true);
 
 	cstring vertexShaderData = reinterpret_cast<cstring>(vertexShaderBytes.data());
 	cstring fragmentShaderData = reinterpret_cast<cstring>(fragmentShaderBytes.data());
 
 	// Set up shader
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	uint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderData, NULL);
 	glCompileShader(vertexShader);
 
@@ -30,7 +30,7 @@ void OpenGLGraphics::AttachShader()
 		spdlog::error("[OpenGL Error] Vertex shader compilation failed: {}", infoLog);
 	}
 
-	unsigned int fragmentShader;
+	uint fragmentShader;
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentShaderData, NULL);
 	glCompileShader(fragmentShader);
@@ -43,7 +43,7 @@ void OpenGLGraphics::AttachShader()
 		spdlog::error("[OpenGL Error] Fragment shader compilation failed: {}", infoLog);
 	}
 
-	unsigned int shaderProgram = glCreateProgram();
+	uint shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
@@ -70,7 +70,7 @@ bool OpenGLGraphics::BeginFrame() {
 }
 
 void OpenGLGraphics::EndFrame() {
-	glfwSwapBuffers(window_->GetHandle());
+	glfwSwapBuffers(m_pWindow->GetHandle());
 }
 
 #pragma endregion
@@ -78,13 +78,13 @@ void OpenGLGraphics::EndFrame() {
 #pragma region Buffers
 
 void OpenGLGraphics::BindVertexArrayObject() {
-	glGenVertexArrays(1, &VAO_);
-	glBindVertexArray(VAO_);
+	glGenVertexArrays(1, &m_VAO);
+	glBindVertexArray(m_VAO);
 }
 
 void OpenGLGraphics::CreateVertexBuffer(span<Vertex> vertices) {
-	glGenBuffers(1, &VBO_);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_);
+	glGenBuffers(1, &m_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
@@ -94,14 +94,14 @@ void OpenGLGraphics::CreateVertexBuffer(span<Vertex> vertices) {
 }
 
 void OpenGLGraphics::CreateIndexBuffer(span<int> indices) {
-	glGenBuffers(1, &EBO_);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
+	glGenBuffers(1, &m_EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), indices.data(), GL_STATIC_DRAW);
 }
 
 void OpenGLGraphics::RenderIndexedBuffer() {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glBindVertexArray(VAO_);
+	glBindVertexArray(m_VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
@@ -113,10 +113,10 @@ void OpenGLGraphics::SetViewProjection(mat4 view, mat4 projection) { }
 
 void OpenGLGraphics::CreateTexture(uchar* pixels)
 {
-	pixels_ = pixels;
-	glGenTextures(1, &texture_);
-	glBindTexture(GL_TEXTURE_2D, texture_);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMAGE_WIDTH, IMAGE_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels_);
+	m_pPixels = pixels;
+	glGenTextures(1, &m_texture);
+	glBindTexture(GL_TEXTURE_2D, m_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMAGE_WIDTH, IMAGE_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pPixels);
 	float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -143,9 +143,9 @@ void OpenGLGraphics::Initialize() {
 	glClearColor(0.f, 0.f, 0.f, 1.0f);
 
 	int width, height;
-	glfwGetFramebufferSize(window_->GetHandle(), &width, &height);
+	glfwGetFramebufferSize(m_pWindow->GetHandle(), &width, &height);
 	glViewport(0, 0, width, height); // TODO: Handle viewport size in more robust manner
-	glfwSetFramebufferSizeCallback(window_->GetHandle(), framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(m_pWindow->GetHandle(), FramebufferSizeCallback);
 
 	// Bind vertex array object
 	BindVertexArrayObject();

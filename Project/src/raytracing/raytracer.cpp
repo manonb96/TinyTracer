@@ -1,23 +1,21 @@
 #include "raytracer.hpp"
 
-RayTracer::RayTracer(int spp) : samplesPerPixel(spp)
-{ 
-    samplesPerPixelScale = 1.0f / spp;
+RayTracer::RayTracer(int spp) : m_samplesPerPixel(spp) { 
+    m_samplesPerPixelScale = 1.0f / spp;
 }
 
-Color RayTracer::GetPixelColor(int x, int y, Camera& camera, const Scene& scene)
-{
+Color RayTracer::GetPixelColor(int x, int y, Camera& camera, const Scene& scene) {
     Color color = COLOR_BLACK;
     
-    for (int i = 0; i < samplesPerPixel; i++) 
+    for (int i = 0; i < m_samplesPerPixel; i++) 
     {
-        float offsetX = random() - 0.5f;
-        float offsetY = random() - 0.5f;
+        float offsetX = GetRandomFloat() - 0.5f;
+        float offsetY = GetRandomFloat() - 0.5f;
         Ray primaryRay = camera.GeneratePrimaryRay(x + offsetX, y + offsetY);
         color += TraceRay(primaryRay, scene);
     }
 
-    color *= samplesPerPixelScale;
+    color *= m_samplesPerPixelScale;
     return color;
 }
 
@@ -27,7 +25,9 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
     // Find the closest sphere
     Sphere* nearestObject = nullptr;
     float tNear = INFINITY;
-    for (Sphere* sphere : scene.spheres) {
+    
+    auto& spheres = scene.GetSpheres();
+    for (Sphere* sphere : spheres) {
         bool hit = IntersectRaySphere(primaryRay, *sphere);
         if (hit && primaryRay.t < tNear) {
             nearestObject = sphere;
@@ -40,11 +40,12 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
         IntersectionPoint ip(float3(primaryRay.origin + primaryRay.direction * tNear));
         ip.normal = normalize(ip.point - nearestObject->center);
 
-        for (Light* light : scene.lights) {
+        auto& lights = scene.GetLights();
+        for (Light* light : lights) {
             Ray shadowRay(ip.point + OFFSET * ip.normal, normalize(light->position - ip.point));
             bool occluded = false;
             float distanceToLight = length(light->position - ip.point);
-            for (Sphere* sphere : scene.spheres) {
+            for (Sphere* sphere : spheres) {
                 if (sphere == nearestObject) {
                     continue;
                 }
@@ -72,8 +73,8 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
 }
 
 Color RayTracer::GetBackgroundColor(const Ray& primaryRay) {
-    float a = 0.5f * (primaryRay.direction.y + 1.0f);
-    return lerp(COLOR_WHITE, COLOR_LIGHTBLUE, 1.0f - a);
+    float a = 0.5f * (primaryRay.direction.y + 1.0f); 
+    return Lerp(COLOR_WHITE, COLOR_LIGHTBLUE, 1.0f - a);
 }
 
 bool RayTracer::IntersectRaySphere(Ray& ray, const Sphere& sphere) {

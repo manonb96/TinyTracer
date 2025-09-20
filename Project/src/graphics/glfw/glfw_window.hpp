@@ -15,5 +15,5 @@ public:
 	void ProcessUserInput();
 
 private:
-	GLFWwindow* window_;
+	GLFWwindow* m_pWindow;
 };

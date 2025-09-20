@@ -55,7 +55,6 @@ int main() {
 
 	// Initialize ray tracing core
 	Core* core = new Core();
-	core->InitializeCore();
 	
 	// Calculate pixel values and set up textures
 	uchar* pixels = new uchar[IMAGE_WIDTH * IMAGE_HEIGHT * 4];
@@ -79,7 +78,7 @@ int main() {
 
 	// Clear memory
 	delete[] pixels;
-	core->~Core();
+	delete core;
 
 	return 0;
 }

@@ -6,12 +6,14 @@
 
 class Core {
 public: 
-	Camera* mainCamera = nullptr;
-	Scene* scene = nullptr;
-	RayTracer* rayTracer = nullptr;
-	
-	Core() = default;
+	Core();
 	~Core();
-	void InitializeCore();
 	void GetPixels(uchar* pixels);
+
+private:
+	Camera* m_pMainCamera = nullptr;
+	Scene* m_pScene = nullptr;
+	RayTracer* m_pRayTracer = nullptr;
+
+	void InitializeCore();
 };

@@ -11,8 +11,9 @@ public:
 
 	vector<uchar> GetVertexShaderBytes(bool addNullTerminator = false);
 	vector<uchar> GetFragmentShaderBytes(bool addNullTerminato = false);
+
 private:
-	const string name_;
-	string vertexShaderPath_;
-	string fragmentShaderPath_;
+	const string m_name;
+	string m_vertexShaderPath;
+	string m_fragmentShaderPath;
 };

@@ -2,16 +2,20 @@
 #include "core.hpp"
 #include "raytracer.hpp"
 
-void Core::InitializeCore() {
-	mainCamera = new Camera(float3(0.f, 0.f, 0.f));
-    scene = new Scene();
-    rayTracer = new RayTracer(8);
+Core::Core() {
+    InitializeCore();
 }
 
 Core::~Core() {
-	delete mainCamera;
-    delete scene;
-    delete rayTracer;
+    delete m_pMainCamera;
+    delete m_pScene;
+    delete m_pRayTracer;
+}
+
+void Core::InitializeCore() {
+	m_pMainCamera = new Camera(float3(0.f, 0.f, 0.f));
+    m_pScene = new Scene();
+    m_pRayTracer = new RayTracer(8);
 }
 
 void Core::GetPixels(uchar* pixels) {
@@ -19,7 +23,7 @@ void Core::GetPixels(uchar* pixels) {
     
     for (int y = 0; y < IMAGE_HEIGHT; y++) {
         for (int x = 0; x < IMAGE_WIDTH; x++) {
-            Color color = rayTracer->GetPixelColor(x, y, *mainCamera, *scene);            
+            Color color = m_pRayTracer->GetPixelColor(x, y, *m_pMainCamera, *m_pScene);            
             WriteColor(pixels, x, y, color);
         }
     }

@@ -8,17 +8,14 @@ public:
 
 	Ray GeneratePrimaryRay(float x, float y);
 private:
-	float3 cameraCenter;
-	float3 right;
-	float3 up;
-	float3 forward;
+	float3 m_cameraCenter;
 
-	float3 pixelU;
-	float3 pixelV;
-	float3 pixelTopLeft;
+	float3 m_pixelU;
+	float3 m_pixelV;
+	float3 m_pixelTopLeft;
 
-	float aspectRatio;
-	float focalLength;
+	float m_aspectRatio;
+	float m_focalLength;
 
-	void PrecomputeImagePlane();
+	void PrecomputeImagePlane(const float3& right, const float3& up, const float3& forward);
 };

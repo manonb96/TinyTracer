@@ -19,13 +19,13 @@ public:
 
 	// TODO: Add Destroy-methods
 private:
+	uint m_VAO = 0;
+	uint m_VBO = 0;
+	uint m_EBO = 0;
+	uint m_texture = 0;
+	uchar* m_pPixels = nullptr;
+
 	void Initialize() override;
 	void BindVertexArrayObject();
 	void AttachShader();
-
-	unsigned int VAO_ = 0;
-	unsigned int VBO_ = 0;
-	unsigned int EBO_ = 0;
-	unsigned int texture_ = 0;
-	uchar* pixels_;
 };

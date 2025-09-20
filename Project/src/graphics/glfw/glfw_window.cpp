@@ -15,39 +15,39 @@ Window::Window(cstring name, int2 size) {
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 #endif
 
-	window_ = glfwCreateWindow(size.x, size.y, name, nullptr, nullptr);
-	if (window_ == nullptr) {
+	m_pWindow = glfwCreateWindow(size.x, size.y, name, nullptr, nullptr);
+	if (m_pWindow == nullptr) {
 		std::exit(EXIT_FAILURE);
 	}
 	
 #if OPENGL
-	glfwMakeContextCurrent(window_);
+	glfwMakeContextCurrent(m_pWindow);
 #endif
 }
 
 Window::~Window() {
-	glfwDestroyWindow(window_);
+	glfwDestroyWindow(m_pWindow);
 	glfwTerminate();
 }
 
 int2 Window::GetWindowSize() const {
 	int2 window_size;
-	glfwGetWindowSize(window_, &window_size.x, &window_size.y);
+	glfwGetWindowSize(m_pWindow, &window_size.x, &window_size.y);
 	return window_size;
 }
 
 int2 Window::GetFrameBufferSize() const {
 	int2 framebuffer_size;
-	glfwGetFramebufferSize(window_, &framebuffer_size.x, &framebuffer_size.y);
+	glfwGetFramebufferSize(m_pWindow, &framebuffer_size.x, &framebuffer_size.y);
 	return framebuffer_size;
 }
 
 bool Window::ShouldClose() const {
-	return glfwWindowShouldClose(window_);
+	return glfwWindowShouldClose(m_pWindow);
 }
 
 GLFWwindow* Window::GetHandle() const {
-	return window_;
+	return m_pWindow;
 }
 
 bool Window::TryMoveToPrimaryMonitor() {
@@ -57,6 +57,6 @@ bool Window::TryMoveToPrimaryMonitor() {
 }
 
 void Window::ProcessUserInput() {
-	if (glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window_, true);
+	if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(m_pWindow, true);
 }

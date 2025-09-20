@@ -2,12 +2,9 @@
 
 #include <filesystem>
 
-struct Color;
+bool IsStringEqual(cstring left, cstring right);
+float Saturate(float x);
+float Lerp(float start, float end, float t);
+float GetRandomFloat();
 
-bool streq(cstring left, cstring right);
-float saturate(float x);
-float lerp(float start, float end, float t);
-Color lerp(Color start, Color end, float t);
-float random();
-
-vector<uchar> ReadFile(std::filesystem::path file_path, bool addNullTerminator = false);
+vector<uchar> ReadFile(std::filesystem::path filePath, bool addNullTerminator = false);

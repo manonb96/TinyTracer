@@ -35,6 +35,60 @@ private:
 		bool IsValid() const { return !formats.empty() && !present_modes.empty(); }
 	};
 
+	// Core objects
+	VkInstance m_instance = VK_NULL_HANDLE;
+	VkDebugUtilsMessengerEXT m_debugMessenger = VK_NULL_HANDLE;
+	VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
+	VkDevice m_logicalDevice = VK_NULL_HANDLE;
+	VkQueue m_graphicsQueue = VK_NULL_HANDLE;
+	VkQueue m_presentQueue = VK_NULL_HANDLE;
+	VkSurfaceKHR m_surface = VK_NULL_HANDLE;
+
+	// Swapchain related
+	VkSwapchainKHR m_swapChain = VK_NULL_HANDLE;
+	VkSurfaceFormatKHR m_surfaceFormat;
+	VkPresentModeKHR m_presentMode;
+	VkExtent2D m_extent;
+	vector<VkImage> m_swapChainImages;
+	vector<VkImageView> m_swapChainImageViews;
+	vector<VkFramebuffer> m_swapChainFrameBuffers;
+
+	// Pipeline and render pass
+	VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
+	VkRenderPass m_renderPass = VK_NULL_HANDLE;
+	VkPipeline m_pipeline = VK_NULL_HANDLE;
+
+	// Command buffers and pools
+	VkCommandPool m_commandPool = VK_NULL_HANDLE;
+	VkCommandBuffer m_commandBuffer = VK_NULL_HANDLE;
+
+	// Synchronization
+	VkSemaphore m_imageAvailableSignal = VK_NULL_HANDLE;
+	vector<VkSemaphore> m_renderFinishedSignals;
+	VkFence m_stillRenderingFence = VK_NULL_HANDLE;
+
+	// Buffers
+	BufferHandle m_vertexBuffer = {};
+	BufferHandle m_indexBuffer = {};
+	BufferHandle m_uniformBuffer = {};
+
+	// Textures
+	TextureHandle m_textureHandle = {};
+	VkDescriptorSetLayout m_textureSetLayout = VK_NULL_HANDLE;
+	VkDescriptorPool m_texturePool = VK_NULL_HANDLE;
+	VkSampler m_textureSampler = VK_NULL_HANDLE;
+
+	// Uniforms and descriptors
+	VkDescriptorSetLayout m_uniformSetLayout = VK_NULL_HANDLE;
+	VkDescriptorPool m_uniformPool = VK_NULL_HANDLE;
+	VkDescriptorSet m_uniformSet = VK_NULL_HANDLE;
+	void* m_pUniformBufferLocation = nullptr;
+
+	// Other
+	std::array<cstring, 1> m_requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+	bool m_validationEnabled = false;
+	uint m_currentImageIndex = 0;
+
 	// Initialization of Vulkan
 	void Initialize() override;
 	void CreateInstance();
@@ -58,10 +112,12 @@ private:
 
 	void RecreateSwapChain();
 	void CleanupSwapChain();
+
+	// Destruction of Vulkan
 	void DestroyBuffer(BufferHandle handle);
 	void DestroyTexture(TextureHandle handle);
 
-	// Rendering
+	// Rendering commands
 	void BeginCommands();
 	void EndCommands();
 
@@ -69,86 +125,38 @@ private:
 	static span<cstring> GetSuggestedInstanceExtensions();
 	static vector<VkExtensionProperties> GetSupportedInstanceExtensions();
 	static bool AreAllExtensionsSupported(span<cstring> extensions);
-	
 	static vector<VkLayerProperties> GetSupportedValidationLayers();
 	static bool AreAllLayersSupported(span<cstring> extensions);
 
-	// Private methods
+	// Device queries
 	vector<cstring> GetRequiredInstanceExtensions();
-
 	QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 	SwapChainProperties GetSwapChainProperties(VkPhysicalDevice device);
-
 	bool IsDeviceSuitable(VkPhysicalDevice device);
 	vector<VkPhysicalDevice> GetAvailableDevices();
 	bool AreAllDeviceExtensionsSupported(VkPhysicalDevice device);
 	vector<VkExtensionProperties> GetDeviceAvailableExtensions(VkPhysicalDevice device);
 
+	// Swapchain helpers
 	VkSurfaceFormatKHR ChooseSwapSurfaceFormat(span<VkSurfaceFormatKHR> formats);
 	VkPresentModeKHR ChooseSwapPresentMode(span<VkPresentModeKHR> modes);
 	VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 	uint ChooseSwapImageCount(const VkSurfaceCapabilitiesKHR& capabilities);
 
+	// Shader and memory helpers
 	VkShaderModule CreateShaderModule(span<uchar> buffer);
 	uint FindMemoryType(uint type_bits_filter, VkMemoryPropertyFlags required_properties);
 
+	// Buffer and image helpers
 	BufferHandle CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, uint element_count);
 	VkCommandBuffer BeginTransientCommandBuffer();
 	void EndTransientCommandBuffer(VkCommandBuffer command_buffer);
-
 	TextureHandle CreateImage(int2 size, VkFormat format, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
 	void TransitionImageLayout(VkImage image, VkImageLayout old_layout, VkImageLayout new_layout);
 	void CopyBufferToImage(VkBuffer buffer, VkImage image, int2 image_size);
 	VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspect_flag);
 	
+	// Viewport helpers
 	VkViewport GetViewport();
 	VkRect2D GetScissor();
-
-	// Member variables
-	VkInstance instance_ = VK_NULL_HANDLE;
-	VkDebugUtilsMessengerEXT debug_messenger_ = VK_NULL_HANDLE;
-	BufferHandle vertex_buffer_ = {};
-	BufferHandle index_buffer_ = {};
-	TextureHandle texture_handle_ = {};
-
-	std::array<cstring, 1> required_device_extensions_ = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-	VkPhysicalDevice physical_device_ = VK_NULL_HANDLE;
-	VkDevice logical_device_ = VK_NULL_HANDLE;
-	VkQueue graphics_queue_ = VK_NULL_HANDLE;
-	VkQueue present_queue_ = VK_NULL_HANDLE;
-
-	VkSurfaceKHR surface_ = VK_NULL_HANDLE;
-	VkSwapchainKHR swap_chain_ = VK_NULL_HANDLE;
-	VkSurfaceFormatKHR surface_format_;
-	VkPresentModeKHR present_mode_;
-	VkExtent2D extent_;
-	vector<VkImage> swap_chain_images_;
-	vector<VkImageView> swap_chain_image_views_;
-	vector<VkFramebuffer> swap_chain_framebuffers_;
-
-	VkPipelineLayout pipeline_layout_ = VK_NULL_HANDLE;
-	VkRenderPass render_pass_ = VK_NULL_HANDLE;
-	VkPipeline pipeline_ = VK_NULL_HANDLE;
-
-	VkCommandPool command_pool_ = VK_NULL_HANDLE;
-	VkCommandBuffer command_buffer_ = VK_NULL_HANDLE;
-
-	VkSemaphore image_available_signal_ = VK_NULL_HANDLE;
-	vector<VkSemaphore> render_finished_signal_;
-	VkFence still_rendering_fence_ = VK_NULL_HANDLE;
-
-	uint current_image_index_ = 0;
-
-	VkDescriptorSetLayout uniform_set_layout_ = VK_NULL_HANDLE;
-	VkDescriptorPool uniform_pool_ = VK_NULL_HANDLE;
-	VkDescriptorSet uniform_set_ = VK_NULL_HANDLE;
-	BufferHandle uniform_buffer_ = {};
-	void* uniform_buffer_location_ = nullptr;
-
-	VkDescriptorSetLayout texture_set_layout_ = VK_NULL_HANDLE;
-	VkDescriptorPool texture_pool_ = VK_NULL_HANDLE;
-	VkSampler texture_sampler_ = VK_NULL_HANDLE;
-
-	// Validation
-	bool validation_enabled_ = false;
 };

@@ -23,9 +23,8 @@ public:
 	virtual void RenderIndexedBuffer() = 0;
 
 protected:
-	virtual void Initialize() = 0;
+	gsl::not_null<Window*> m_pWindow;
+	Shader* m_pShader;
 
-	// Member variables
-	gsl::not_null<Window*> window_;
-	Shader* shader_;
+	virtual void Initialize() = 0;
 };
