@@ -1,17 +1,23 @@
-#include "geometry.hpp"
+#include "primitives.hpp"
 
-AABB GeometricObject::GetBoundingBox() const {
-	return m_bbox;
-}
+Primitive::Primitive(float3 position) : m_center(position) {}
 
-Color GeometricObject::GetColor() const {
+Color Primitive::GetColor() const {
     return m_color;
 }
 
-Sphere::Sphere(float3 c, float r) : m_center(c), m_radius(r) {
-	float3 rvec = float3(m_radius, m_radius, m_radius);
-	m_bbox = AABB(m_center - rvec, m_center + rvec);
-} 
+void Primitive::SetID(uint id) {
+    m_id = id;
+}
+
+uint Primitive::GetID() const {
+    return m_id;
+}
+
+Sphere::Sphere(float3 center, float radius) : Primitive(center), m_radius(radius) {
+    float3 rvec = float3(m_radius, m_radius, m_radius);
+    m_bbox = AABB(m_center - rvec, m_center + rvec);
+}
 
 // We assume here that ray.direction is normalized
 bool Sphere::Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersectionPoint) const {
@@ -38,6 +44,7 @@ bool Sphere::Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersectio
     intersectionPoint.t = root;
     intersectionPoint.point = ray.GetPoint(root);
     intersectionPoint.normal = (intersectionPoint.point - m_center) * (1.0f / m_radius);
+    intersectionPoint.objectID = m_id;
 
     return true;
 }

@@ -20,7 +20,8 @@ void Core::InitializeCore() {
 
 #if BVH
     auto start = std::chrono::steady_clock::now();
-    m_pBVHTree = new BVHNode(m_pScene);
+    auto objectsCopy = m_pScene->GetObjectsCopy();
+    m_pBVHTree = new BVHNode(objectsCopy, 0, objectsCopy.size());
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> duration = end - start;
     spdlog::info("Timer | Build BVH: {}", duration.count());

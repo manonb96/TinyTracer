@@ -24,21 +24,20 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
     Interval defaultRayLength = Interval(0, INFINITY);
 
     // Find the closest object
-    GeometricObject* nearestObject = nullptr;
     IntersectionPoint nearestIntersectionPoint; 
     
     IntersectionPoint tmpIntersectionPoint;
     auto& objects = scene.GetObjects();
-    for (GeometricObject* object : objects) {
+    for (int i = 0; i < objects.size(); i++) {
+        std::shared_ptr<GeometricObject> object = objects[i];
         bool hit = object->Hit(primaryRay, defaultRayLength, tmpIntersectionPoint);
         if (hit && tmpIntersectionPoint.t < nearestIntersectionPoint.t) {
-            nearestObject = object;
             nearestIntersectionPoint = tmpIntersectionPoint;
         }
     }
 
     // Cast the shadow rays
-    if (nearestObject != nullptr) {
+    if (nearestIntersectionPoint.objectID != -1) {
        
         // Reset
         tmpIntersectionPoint.t = INFINITY;
@@ -48,11 +47,12 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
             Ray shadowRay(nearestIntersectionPoint.point + OFFSET * nearestIntersectionPoint.normal, normalize(light->position - nearestIntersectionPoint.point));
             bool occluded = false;
             float distanceToLight = length(light->position - nearestIntersectionPoint.point);
-            for (GeometricObject* object : objects) {
-                if (object == nearestObject) {
+            for (int i = 0; i < objects.size(); i++) {
+                if (i == nearestIntersectionPoint.objectID) {
                     continue;
                 }
-                
+
+                std::shared_ptr<GeometricObject> object = objects[i];
                 bool hit = object->Hit(shadowRay, defaultRayLength, tmpIntersectionPoint);
                 if (hit && tmpIntersectionPoint.t < distanceToLight) {
                     occluded = true;
@@ -64,7 +64,7 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
                 float3 L = normalize(light->position - nearestIntersectionPoint.point);
                 float clampedCosTheta = std::max(dot(nearestIntersectionPoint.normal, L), 0.f);
                 float attenuation = 1.0f / (distanceToLight * distanceToLight);
-                float3 diffuseColor = light->color * nearestObject->GetColor().rgb * clampedCosTheta * attenuation;
+                float3 diffuseColor = light->color * objects[nearestIntersectionPoint.objectID]->GetColor().rgb * clampedCosTheta * attenuation;
                 color.rgb += diffuseColor;
             }
         }

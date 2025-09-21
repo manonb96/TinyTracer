@@ -1,11 +1,7 @@
 #include "bvh.hpp"
 #include <algorithm>
 
-BVHNode::BVHNode(gsl::not_null<Scene*> scene)
-	: BVHNode(scene->GetObjectsCopy(), 0, scene->GetObjectsCount()) {
-}
-
-BVHNode::BVHNode(vector<GeometricObject*> objects, int start, int end) {
+BVHNode::BVHNode(vector<std::shared_ptr<Primitive>>& objects, int start, int end) {
 	m_bbox = AABB_EMPTY;
 	for (int object_index = start; object_index < end; object_index++) 	{
 		m_bbox = AABB(m_bbox, objects[object_index]->GetBoundingBox());
@@ -19,8 +15,7 @@ BVHNode::BVHNode(vector<GeometricObject*> objects, int start, int end) {
 		m_pLeft = objects[start];
 		m_bbox = m_pLeft->GetBoundingBox();
 		return;
-	}
-	
+	}	
 
 	if (objectCount == 2) {
 		m_pLeft = objects[start];
@@ -32,8 +27,8 @@ BVHNode::BVHNode(vector<GeometricObject*> objects, int start, int end) {
 			: BoxCompare_Z;
 		std::sort(objects.begin() + start, objects.begin() + end, comparator);
 		int mid = objectCount / 2;
-		m_pLeft = new BVHNode(objects, start, mid);
-		m_pRight = new BVHNode(objects, mid, end);
+		m_pLeft = std::make_shared<BVHNode>(objects, start, mid);
+		m_pRight = std::make_shared<BVHNode>(objects, mid, end);
 	}
 
 	m_bbox = AABB(m_pLeft->GetBoundingBox(), m_pRight->GetBoundingBox());
@@ -54,10 +49,4 @@ bool BVHNode::Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersecti
 	return hitLeft || hitRight;
 }
 
-BVHNode::~BVHNode() {
-	delete m_pLeft;
-	delete m_pRight;
-
-	m_pLeft = nullptr;
-	m_pRight = nullptr;
-}
+BVHNode::~BVHNode() { }

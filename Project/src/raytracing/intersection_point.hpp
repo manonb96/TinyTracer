@@ -7,4 +7,5 @@ struct IntersectionPoint {
 	float3 point;
 	float3 normal;
 	float t = INFINITY;
+	int objectID = -1;
 };

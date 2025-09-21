@@ -1,5 +1,5 @@
 #pragma once
-#include "geometry.hpp"
+#include "primitives.hpp"
 #include "lights.hpp"
 #include "../raytracing/acceleration_structures/aabb.hpp"
 
@@ -9,16 +9,17 @@ public:
 	~Scene();
 
 	const vector<Light*>& GetLights() const { return m_lights; }
-	const vector<GeometricObject*>& GetObjects() const { return m_objects; }
+	const vector<std::shared_ptr<Primitive>>& GetObjects() const { return m_objects; }
 
-	vector<GeometricObject*> GetObjectsCopy() const { return m_objects;  }
+	vector<std::shared_ptr<Primitive>> GetObjectsCopy() const { return m_objects;  }
 	int GetObjectsCount() const { return m_objects.size(); }
 
 private:
-	vector<GeometricObject*> m_objects;
+	vector<std::shared_ptr<Primitive>> m_objects;
 	vector<Light*> m_lights;
 
 	AABB m_bbox;
+	uint primitiveCount = 0;
 
-	void AddSphere(Sphere* sphere);
+	void AddPrimitive(std::shared_ptr<Primitive> primitiveObject);
 };
