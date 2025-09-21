@@ -15,5 +15,5 @@ private:
 	Color GetBackgroundColor(const Ray& ray);
 	Color TraceRay(Ray& primaryRay, const Scene& scene);
 
-	const Interval k_rayLength = Interval(0, INFINITY);
+	Interval m_rayLength = Interval(0, INFINITY);
 };

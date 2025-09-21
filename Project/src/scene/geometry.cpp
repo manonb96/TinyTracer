@@ -14,7 +14,7 @@ Sphere::Sphere(float3 c, float r) : m_center(c), m_radius(r) {
 } 
 
 // We assume here that ray.direction is normalized
-bool Sphere::Hit(const Ray& ray, const Interval& ray_t, IntersectionPoint& intersectionPoint) const {
+bool Sphere::Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersectionPoint) const {
     float3 originToCenter = m_center - ray.origin;
     float tClosestApproach = dot(originToCenter, ray.direction);
     float distanceToSurfaceSquared = lengthSquared(originToCenter) - m_radius * m_radius;

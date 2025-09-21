@@ -5,6 +5,9 @@ project(TinyTracer)
 # Set Graphics API as VULKAN or OPENGL
 set(GRAPHICS_API "VULKAN")
 
+# Set acceleration structure as BVH or NONE
+set(ACC_STRUCT "BVH")
+
 # Packages
 find_package(Vulkan REQUIRED)
 
@@ -86,4 +89,14 @@ elseif(GRAPHICS_API STREQUAL "OPENGL")
 	target_compile_definitions(TinyTracer PRIVATE OPENGL=1)
 else()
     message(FATAL_ERROR "Unknown GRAPHICS_API value: ${GRAPHICS_API}")
+endif()
+
+if(ACC_STRUCT STREQUAL "BVH")
+	target_compile_definitions(TinyTracer PRIVATE ACC_STRUCT_STRING=\"BHV\")
+	target_compile_definitions(TinyTracer PRIVATE BVH=1)
+elseif(ACC_STRUCT STREQUAL "NONE")
+	target_compile_definitions(TinyTracer PRIVATE ACC_STRUCT_STRING=\"None\")
+	target_compile_definitions(TinyTracer PRIVATE BVH=0)
+else()
+    message(FATAL_ERROR "Unknown ACC_STRUCT value: ${ACC_STRUCT}")
 endif()

@@ -21,6 +21,7 @@ Color RayTracer::GetPixelColor(int x, int y, Camera& camera, const Scene& scene)
 
 Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
     Color color = COLOR_BLACK;
+    Interval defaultRayLength = Interval(0, INFINITY);
 
     // Find the closest object
     GeometricObject* nearestObject = nullptr;
@@ -29,7 +30,7 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
     IntersectionPoint tmpIntersectionPoint;
     auto& objects = scene.GetObjects();
     for (GeometricObject* object : objects) {
-        bool hit = object->Hit(primaryRay, k_rayLength, tmpIntersectionPoint);
+        bool hit = object->Hit(primaryRay, defaultRayLength, tmpIntersectionPoint);
         if (hit && tmpIntersectionPoint.t < nearestIntersectionPoint.t) {
             nearestObject = object;
             nearestIntersectionPoint = tmpIntersectionPoint;
@@ -52,7 +53,7 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
                     continue;
                 }
                 
-                bool hit = object->Hit(shadowRay, k_rayLength, tmpIntersectionPoint);
+                bool hit = object->Hit(shadowRay, defaultRayLength, tmpIntersectionPoint);
                 if (hit && tmpIntersectionPoint.t < distanceToLight) {
                     occluded = true;
                     break;

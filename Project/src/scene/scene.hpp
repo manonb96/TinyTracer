@@ -8,8 +8,11 @@ public:
 	Scene();
 	~Scene();
 
+	const vector<Light*>& GetLights() const { return m_lights; }
 	const vector<GeometricObject*>& GetObjects() const { return m_objects; }
-	const vector<Light*>& GetLights() const { return m_lights;  }
+
+	vector<GeometricObject*> GetObjectsCopy() const { return m_objects;  }
+	int GetObjectsCount() const { return m_objects.size(); }
 
 private:
 	vector<GeometricObject*> m_objects;

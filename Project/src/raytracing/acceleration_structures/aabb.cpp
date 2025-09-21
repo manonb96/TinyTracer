@@ -21,6 +21,13 @@ Interval AABB::GetAxis(int n) const {
 	return m_x;
 }
 
+int AABB::GetLongestAxis() const {
+	if (m_x.Size() > m_y.Size()) {
+		return m_x.Size() > m_z.Size() ? 0 : 2;
+	}
+	return m_y.Size() > m_z.Size() ? 1 : 2;
+}
+
 bool AABB::IntersectRayAABB(const Ray& ray, Interval& rayInterval) const {
 	for (int axis = 0; axis < 3; axis++)
 	{

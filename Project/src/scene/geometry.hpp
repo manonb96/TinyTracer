@@ -5,7 +5,7 @@
 
 class GeometricObject {
 public:
-	virtual bool Hit(const Ray& ray, const Interval& ray_t, IntersectionPoint& intersectionPoint) const = 0;
+	virtual bool Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersectionPoint) const = 0;
 	AABB GetBoundingBox() const;
 	Color GetColor() const;
 
@@ -19,7 +19,7 @@ public:
 	Sphere(float3 c, float r);
 	~Sphere() = default;
 
-	bool Hit(const Ray& ray, const Interval& ray_t, IntersectionPoint& intersectionPoint) const override;
+	bool Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersectionPoint) const override;
 	
 private:
 	float3 m_center;

@@ -27,3 +27,6 @@ inline bool Interval::Contains(float x) const {
 inline bool Interval::Surrounds(float x) const {
 	return min < x && x < max;
 }
+
+static const Interval INTERVAL_EMPTY = Interval(INFINITY, -INFINITY);
+static const Interval INTERVAL_UNIVERSE = Interval(-INFINITY, INFINITY);

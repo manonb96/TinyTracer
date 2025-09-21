@@ -13,7 +13,13 @@ public:
 
 	bool IntersectRayAABB(const Ray& ray, Interval& rayInterval) const;
 	Interval GetAxis(int n) const;
+	int GetLongestAxis() const;
+
+	static const AABB empty;
 
 private:
 	Interval m_x, m_y, m_z;
 };
+
+static const AABB AABB_EMPTY = AABB(INTERVAL_EMPTY, INTERVAL_EMPTY, INTERVAL_EMPTY);
+static const AABB AABB_UNIVERSE = AABB(INTERVAL_UNIVERSE, INTERVAL_UNIVERSE, INTERVAL_UNIVERSE);
