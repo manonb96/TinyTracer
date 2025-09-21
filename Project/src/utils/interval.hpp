@@ -3,6 +3,10 @@
 struct Interval {
 	Interval() : min(INFINITY), max(-INFINITY) {}
 	Interval(float min, float max) : min(min), max(max) {}
+	Interval(const Interval& a, const Interval& b) {
+		min = a.min <= b.min ? a.min : b.min;
+		max = a.max >= b.max ? a.max : b.max;
+	}
 
 	float min;
 	float max;

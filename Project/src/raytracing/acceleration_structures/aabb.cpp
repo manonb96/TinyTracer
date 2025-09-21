@@ -3,10 +3,16 @@
 AABB::AABB(const Interval& x, const Interval& y, const Interval& z) :
 	m_x(x), m_y(y), m_z(z) { }
 
-AABB::AABB(const float3& a, const float3& b) {
-	m_x = (a.x <= b.x) ? Interval(a.x, b.x) : Interval(b.x, a.x);
-	m_y = (a.y <= b.y) ? Interval(a.y, b.y) : Interval(b.y, a.y);
-	m_z = (a.z <= b.z) ? Interval(a.z, b.z) : Interval(b.z, a.z);
+AABB::AABB(const float3& pointA, const float3& pointB) {
+	m_x = (pointA.x <= pointB.x) ? Interval(pointA.x, pointB.x) : Interval(pointB.x, pointA.x);
+	m_y = (pointA.y <= pointB.y) ? Interval(pointA.y, pointB.y) : Interval(pointB.y, pointA.y);
+	m_z = (pointA.z <= pointB.z) ? Interval(pointA.z, pointB.z) : Interval(pointB.z, pointA.z);
+}
+
+AABB::AABB(const AABB& boxA, const AABB& boxB) {
+	m_x = Interval(boxA.GetAxis(0), boxB.GetAxis(0));
+	m_y = Interval(boxA.GetAxis(1), boxB.GetAxis(1));
+	m_z = Interval(boxA.GetAxis(2), boxB.GetAxis(2));
 }
 
 Interval AABB::GetAxis(int n) const {

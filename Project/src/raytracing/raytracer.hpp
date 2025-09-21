@@ -3,14 +3,6 @@
 #include "../scene/camera.hpp"
 #include "ray.hpp"
 
-struct IntersectionPoint {
-	IntersectionPoint() = default;
-	IntersectionPoint(float3 p) : point(p) {}
-
-	float3 point;
-	float3 normal;
-};
-
 class RayTracer {
 public:
 	RayTracer(int spp = 1);
@@ -22,5 +14,6 @@ private:
 
 	Color GetBackgroundColor(const Ray& ray);
 	Color TraceRay(Ray& primaryRay, const Scene& scene);
-	bool IntersectRaySphere(Ray& ray, const Sphere& sphere);
+
+	const Interval k_rayLength = Interval(0, INFINITY);
 };
