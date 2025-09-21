@@ -5,7 +5,7 @@
 
 class GeometricObject {
 public:
-	virtual bool Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersectionPoint) const = 0;
+	virtual bool Hit(const Ray& ray, const Interval& ray_t, IntersectionPoint& intersectionPoint) const = 0;
 	AABB GetBoundingBox() const;
 
 protected:

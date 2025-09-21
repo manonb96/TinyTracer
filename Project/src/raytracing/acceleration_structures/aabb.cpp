@@ -28,7 +28,7 @@ int AABB::GetLongestAxis() const {
 	return m_y.Size() > m_z.Size() ? 1 : 2;
 }
 
-bool AABB::IntersectRayAABB(const Ray& ray, Interval& rayInterval) const {
+bool AABB::IntersectRayAABB(const Ray& ray, const Interval& rayInterval) const {
 	for (int axis = 0; axis < 3; axis++)
 	{
 		const Interval& intervalForAxis = GetAxis(axis);
@@ -41,12 +41,8 @@ bool AABB::IntersectRayAABB(const Ray& ray, Interval& rayInterval) const {
 			std::swap(t0, t1);
 		}
 
-		if (t0 > rayInterval.min) {
-			rayInterval.min = t0;
-		}
-		if (t1 < rayInterval.max) {
-			rayInterval.max = t1;
-		}
+		float min = std::max(rayInterval.min, t0);
+		float max = std::min(rayInterval.max, t1);
 
 		if (rayInterval.max <= rayInterval.min)
 			return false;

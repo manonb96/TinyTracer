@@ -10,7 +10,7 @@ public:
 	BVHNode(vector<std::shared_ptr<Primitive>>& objects, int start, int end);
 	~BVHNode();
 
-	bool Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersectionPoint) const override;
+	bool Hit(const Ray& ray, const Interval& ray_t, IntersectionPoint& intersectionPoint) const override;
 private:
 	std::shared_ptr<GeometricObject> m_pLeft = nullptr;
 	std::shared_ptr<GeometricObject> m_pRight = nullptr;

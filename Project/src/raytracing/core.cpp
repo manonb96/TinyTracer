@@ -10,7 +10,6 @@ Core::~Core() {
     delete m_pMainCamera;
     delete m_pScene;
     delete m_pRayTracer;
-    delete m_pBVHTree;
 }
 
 void Core::InitializeCore() {
@@ -19,12 +18,7 @@ void Core::InitializeCore() {
     m_pRayTracer = new RayTracer(8);
 
 #if BVH
-    auto start = std::chrono::steady_clock::now();
-    auto objectsCopy = m_pScene->GetObjectsCopy();
-    m_pBVHTree = new BVHNode(objectsCopy, 0, objectsCopy.size());
-    auto end = std::chrono::steady_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    spdlog::info("Timer | Build BVH: {}", duration.count());
+    m_pRayTracer->BuildBVH(*m_pScene);
 #endif
 }
 

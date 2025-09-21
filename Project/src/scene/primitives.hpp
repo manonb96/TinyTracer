@@ -21,7 +21,7 @@ public:
 	Sphere(float3 center, float radius, Color albedo = COLOR_RED);
 	~Sphere() = default;
 
-	bool Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersectionPoint) const override;
+	bool Hit(const Ray& ray, const Interval& ray_t, IntersectionPoint& intersectionPoint) const override;
 
 private:
 	float m_radius;

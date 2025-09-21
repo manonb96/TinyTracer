@@ -13,6 +13,7 @@ BVHNode::BVHNode(vector<std::shared_ptr<Primitive>>& objects, int start, int end
 	// Leaf
 	if (objectCount == 1) {
 		m_pLeft = objects[start];
+		m_pRight = nullptr;
 		m_bbox = m_pLeft->GetBoundingBox();
 		return;
 	}	
@@ -26,7 +27,7 @@ BVHNode::BVHNode(vector<std::shared_ptr<Primitive>>& objects, int start, int end
 			: (axis == 1) ? BoxCompare_Y
 			: BoxCompare_Z;
 		std::sort(objects.begin() + start, objects.begin() + end, comparator);
-		int mid = objectCount / 2;
+		int mid = start + objectCount / 2;
 		m_pLeft = std::make_shared<BVHNode>(objects, start, mid);
 		m_pRight = std::make_shared<BVHNode>(objects, mid, end);
 	}
@@ -34,7 +35,7 @@ BVHNode::BVHNode(vector<std::shared_ptr<Primitive>>& objects, int start, int end
 	m_bbox = AABB(m_pLeft->GetBoundingBox(), m_pRight->GetBoundingBox());
 }
 
-bool BVHNode::Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersectionPoint) const {
+bool BVHNode::Hit(const Ray& ray, const Interval& ray_t, IntersectionPoint& intersectionPoint) const {
 	if (!m_bbox.IntersectRayAABB(ray, ray_t)) {
 		return false;
 	}
@@ -42,8 +43,10 @@ bool BVHNode::Hit(const Ray& ray, Interval& ray_t, IntersectionPoint& intersecti
 	bool hitLeft = m_pLeft->Hit(ray, ray_t, intersectionPoint);
 	bool hitRight = false;
 	
-	if (m_pRight != nullptr) {
-		hitRight = m_pRight->Hit(ray, ray_t, intersectionPoint);
+	if (m_pRight != nullptr)
+	{
+		Interval intervalRight = Interval(ray_t.min, hitLeft ? intersectionPoint.t : ray_t.max);
+		hitRight = m_pRight->Hit(ray, intervalRight, intersectionPoint);
 	}
 
 	return hitLeft || hitRight;

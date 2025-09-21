@@ -11,7 +11,7 @@ public:
 	AABB(const AABB& boxA, const AABB& boxB);
 	~AABB() = default;
 
-	bool IntersectRayAABB(const Ray& ray, Interval& rayInterval) const;
+	bool IntersectRayAABB(const Ray& ray, const Interval& rayInterval) const;
 	Interval GetAxis(int n) const;
 	int GetLongestAxis() const;
 
