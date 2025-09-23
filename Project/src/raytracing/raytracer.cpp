@@ -64,7 +64,7 @@ Color RayTracer::TraceRay(Ray& primaryRay, const Scene& scene) {
                 float3 L = normalize(light->position - nearestIntersectionPoint.point);
                 float clampedCosTheta = std::max(dot(nearestIntersectionPoint.normal, L), 0.f);
                 float attenuation = 1.0f / (distanceToLight * distanceToLight);
-                float3 diffuseColor = light->color * objects[nearestIntersectionPoint.objectID]->GetColor().rgb * clampedCosTheta * attenuation;
+                float3 diffuseColor = light->color * objects[nearestIntersectionPoint.objectID]->GetAlbedo().rgb * clampedCosTheta * attenuation;
                 color.rgb += diffuseColor;
             }
         }

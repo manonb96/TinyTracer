@@ -1,9 +1,9 @@
 #include "primitives.hpp"
 
-Primitive::Primitive(float3 position) : m_center(position) {}
+Primitive::Primitive(float3 position, Color albedo) : m_center(position), m_albedo(albedo) {}
 
-Color Primitive::GetColor() const {
-    return m_color;
+Color Primitive::GetAlbedo() const {
+    return m_albedo;
 }
 
 void Primitive::SetID(uint id) {
@@ -14,7 +14,7 @@ uint Primitive::GetID() const {
     return m_id;
 }
 
-Sphere::Sphere(float3 center, float radius) : Primitive(center), m_radius(radius) {
+Sphere::Sphere(float3 center, float radius, Color albedo) : Primitive(center, albedo), m_radius(radius) {
     float3 rvec = float3(m_radius, m_radius, m_radius);
     m_bbox = AABB(m_center - rvec, m_center + rvec);
 }
