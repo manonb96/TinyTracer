@@ -13,7 +13,7 @@ Core::~Core() {
 }
 
 void Core::InitializeCore() {
-	m_pMainCamera = new Camera(float3(0.f, 0.f, 0.f));
+	m_pMainCamera = new Camera(float3(0.f, 0.f, -2.f));
     m_pScene = new Scene();
     m_pRayTracer = new RayTracer(8);
 

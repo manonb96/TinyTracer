@@ -29,7 +29,7 @@ void Camera::PrecomputeImagePlane(const float3& right, const float3& up, const f
 	float3 imagePlaneCenter = m_cameraCenter + forward * m_focalLength;
 	float3 imagePlaneTopleft = imagePlaneCenter - (right * 0.5f * imagePlaneWidth) - (up * 0.5f * imagePlaneHeight);
 
-	m_pixelU = float3(imagePlaneWidth / (float)IMAGE_WIDTH, 0, 0);
-	m_pixelV = float3(0, imagePlaneHeight / (float)IMAGE_HEIGHT, 0);
+	m_pixelU = right * (imagePlaneWidth / (float)IMAGE_WIDTH);
+	m_pixelV = up * (imagePlaneHeight / (float)IMAGE_HEIGHT);
 	m_pixelTopLeft = imagePlaneTopleft + 0.5f * m_pixelU + 0.5f * m_pixelV;
 }
