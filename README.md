@@ -1,11 +1,6 @@
-## New features (WIP)
-- ~~Anti-aliasing~~
-- ~~BVH~~
-- ~~Camera improvements~~
-- ~~Multiple samples~~
-- ~~Code cleanup/refactoring: private member vars, naming conventions, inline functions, initialization~~
+Merged to main on Sept 26th, 2025.
 
-## Next update: Building a pretty scene
-- Improve light setup
-- Reflections and refractions
-- Ambient light
+## New features
+- Refactoring and bugs solved in ray tracing and camera setup
+- Use of BVH
+- Multiple samples per pixel
