@@ -22,10 +22,7 @@ using int2 = glm::ivec2;
 using float2 = glm::fvec2;
 using float3 = glm::vec3;
 
-// Options
-#define STATS
-
-#if USE_OWN_TYPES
+#ifdef USE_OWN_BASE_TYPES
 // NOTE: Using these instead of glm's makes the program ~ twice as slow
 // 2D
 struct int2 {
