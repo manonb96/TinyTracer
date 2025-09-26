@@ -14,6 +14,10 @@ Camera::Camera(float3 position, float3 lookAt, float3 worldUp) : m_cameraCenter(
 }
 
 Ray Camera::GeneratePrimaryRay(float x, float y) {
+#ifdef STATS
+	stats->primaryRayCounter++;
+#endif
+	
 	float3 pixelCenter = float3(m_pixelTopLeft.x + x * m_pixelU.x, m_pixelTopLeft.y + y * m_pixelV.y, m_pixelTopLeft.z);
 	float3 direction = normalize(pixelCenter - m_cameraCenter);
 

@@ -29,6 +29,10 @@ int AABB::GetLongestAxis() const {
 }
 
 bool AABB::IntersectRayAABB(const Ray& ray, const Interval& rayInterval) const {
+#ifdef STATS
+	stats->aabbRayIntersectionCounter++;
+#endif
+
 	float min = rayInterval.min;
 	float max = rayInterval.max;
 

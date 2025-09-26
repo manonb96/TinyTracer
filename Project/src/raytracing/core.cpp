@@ -23,6 +23,10 @@ void Core::InitializeCore() {
 }
 
 void Core::GetPixels(uchar* pixels) {
+#ifdef STATS
+    stats = new Stats();
+#endif
+
     auto start = std::chrono::steady_clock::now();
     
     for (int y = 0; y < IMAGE_HEIGHT; y++) {
@@ -35,4 +39,13 @@ void Core::GetPixels(uchar* pixels) {
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> duration = end - start;
     spdlog::info("Timer | GetPixels: {}", duration.count());
+
+#ifdef STATS
+    spdlog::info("---------- Stats ----------", stats->sphereRayIntersectionCounter);
+    spdlog::info("Primary rays generated: {}", stats->primaryRayCounter);
+    spdlog::info("Sphere/Box intersection tests: {}", stats->aabbRayIntersectionCounter);
+    spdlog::info("Sphere/Ray intersection tests: {}", stats->sphereRayIntersectionCounter);
+    spdlog::info("---------------------------", stats->sphereRayIntersectionCounter);
+    delete stats;
+#endif
 }

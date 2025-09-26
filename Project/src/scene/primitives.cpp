@@ -21,6 +21,11 @@ Sphere::Sphere(float3 center, float radius, Color albedo) : Primitive(center, al
 
 // We assume here that ray.direction is normalized
 bool Sphere::Hit(const Ray& ray, const Interval& ray_t, IntersectionPoint& intersectionPoint) const {
+
+#ifdef STATS
+    stats->sphereRayIntersectionCounter++;
+#endif
+
     float3 originToCenter = m_center - ray.origin;
     float tClosestApproach = dot(originToCenter, ray.direction);
     float distanceToSurfaceSquared = dot(originToCenter, originToCenter) - m_radius * m_radius;
