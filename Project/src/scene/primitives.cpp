@@ -23,7 +23,7 @@ Sphere::Sphere(float3 center, float radius, Color albedo) : Primitive(center, al
 bool Sphere::Hit(const Ray& ray, const Interval& ray_t, IntersectionPoint& intersectionPoint) const {
     float3 originToCenter = m_center - ray.origin;
     float tClosestApproach = dot(originToCenter, ray.direction);
-    float distanceToSurfaceSquared = lengthSquared(originToCenter) - m_radius * m_radius;
+    float distanceToSurfaceSquared = dot(originToCenter, originToCenter) - m_radius * m_radius;
 
     float discriminant = tClosestApproach * tClosestApproach - distanceToSurfaceSquared;
     if (discriminant < 0)

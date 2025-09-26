@@ -18,6 +18,12 @@ using span = gsl::span<T>;
 template<typename T>
 using vector = std::vector<T>;
 
+using int2 = glm::ivec2;
+using float2 = glm::fvec2;
+using float3 = glm::vec3;
+
+#if USE_OWN_TYPES
+// NOTE: Using these instead of glm's makes the program ~ twice as slow
 // 2D
 struct int2 {
 	int x, y;
@@ -67,9 +73,11 @@ inline const float& float3::operator[](int index) const {
 	default: throw std::out_of_range("float3 index out of range");
 	}
 }
+
 inline float dot(float3 a, float3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 inline float lengthSquared(float3 v) { return dot(v, v); }
 inline float length(float3 v) { return sqrtf(lengthSquared(v)); }
-inline float3 normalize(float3 v) { float invLen = rsqrtf(dot(v, v)); return v * invLen; }
+inline float3 normalize(float3 v) { float invLen = sqrtf(dot(v, v)); return v * invLen; }
 inline float3 cross(float3 a, float3 b) { return float3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x); }
 inline float isNormal(float3 a) { return (fabsf(length(a) - 1.0f)) < 0.001f; }
+#endif
